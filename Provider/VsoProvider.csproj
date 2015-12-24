@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D2FA08F1-CD2E-4F61-83A1-3A96EFB01BD8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VstsProvider</RootNamespace>
+    <AssemblyName>VstsProvider</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RegisterForComInterop>false</RegisterForComInterop>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Management.Automation">
+      <HintPath>packages\Microsoft.PowerShell.3.ReferenceAssemblies.1.0.0\lib\net4\System.Management.Automation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\BuildDefinitions\BuildDefinitionsById_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\BuildDefinitions\BuildDefinitionById_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\BuildQueues\BuildQueue_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\BuildQueues\BuildQueues_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\Processes\Process_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\Processes\Processes_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\BuildDefinitions\BuildDefinitions_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\BuildDefinitions\BuildDefinition_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\Builds\CompletedBuild_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\Builds\CompletedBuilds_2.0_TypeInfo.cs" />
+    <Compile Include="DriveItems\Path.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Commits\Commits_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Commits\Commit_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Items\Item_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Items\Items_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Pushes\Pushes_2_0_preview_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Pushes\Pushes_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Pushes\Push_2_0_preview_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Pushes\Push_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Refs\Ref_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Refs\Refs_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\RootSegment.cs" />
+    <Compile Include="DriveItems\SegmentHelper.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\Builds\Builds_2.0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\Builds\Build_2_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Repos_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitTeamProjects_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitTeamProject_1_0_NewItemParameters.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\TeamProject_1_0_NewItemParameters.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitRepos\Repo_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\GitTeamProject_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\WellKnownNameContainerTypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\ProjectCollections_1_0_preview_2_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\TeamProjects_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\TeamProjects\TeamProject_1_0_TypeInfo.cs" />
+    <Compile Include="DriveItems\ProjectCollections\ProjectCollection_1_0_preview_2_TypeInfo.cs" />
+    <Compile Include="DriveItems\RootTypeInfo.cs" />
+    <Compile Include="DriveItems\ContainerTypeInfo.cs" />
+    <Compile Include="DriveItems\LeafTypeInfo.cs" />
+    <Compile Include="DriveItems\TypeInfo.cs" />
+    <Compile Include="DriveItems\Segment.cs" />
+    <Compile Include="DriveParameters.cs" />
+    <Compile Include="DriveInfo.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="SecureStringHelper.cs" />
+    <Compile Include="Provider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
