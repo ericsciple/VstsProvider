@@ -91,6 +91,23 @@ ConvertFrom-Json $response.Content |
             } while (!string.IsNullOrEmpty(continuationToken));
         }
 
+        protected T Wrap<T>(Func<T> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch (AggregateException ex)
+            {
+                if (ex.InnerExceptions.Count == 1)
+                {
+                    throw ex.InnerExceptions[0];
+                }
+
+                throw;
+            }
+        }
+
         private static string GetCredentials(Provider provider)
         {
             if (provider.PSVstsDriveInfo.UsePersonalAccessToken)

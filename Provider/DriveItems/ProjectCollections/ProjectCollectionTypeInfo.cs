@@ -1,9 +1,9 @@
 ﻿namespace VstsProvider.DriveItems.ProjectCollections
 {
     using System.Management.Automation;
-    using BuildQueues;
-    using Processes;
-    using TeamProjects;
+    //using BuildQueues;
+    //using Processes;
+    using Projects;
 
     public sealed class ProjectCollectionTypeInfo : ContainerTypeInfo
     {
@@ -12,7 +12,7 @@
             //this.AddChildTypeInfo(new BuildQueues_2_0_TypeInfo());
             //this.AddChildTypeInfo(new GitTeamProjects_1_0_TypeInfo());
             //this.AddChildTypeInfo(new Processes_1_0_TypeInfo());
-            //this.AddChildTypeInfo(new TeamProjects_1_0_TypeInfo());
+            this.AddChildTypeInfo(new ProjectsTypeInfo());
         }
 
         public override string Name

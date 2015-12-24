@@ -1,35 +1,41 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections
+﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
     using Microsoft.TeamFoundation.Core.WebApi;
 
-    public sealed class ProjectCollectionsTypeInfo : WellKnownNameContainerTypeInfo
+    public class ProjectsTypeInfo : WellKnownNameContainerTypeInfo
     {
-        public ProjectCollectionsTypeInfo()
+        public ProjectsTypeInfo()
+            : this(new ProjectTypeInfo())
         {
-            this.AddChildTypeInfo(new ProjectCollectionTypeInfo());
+        }
+
+        public ProjectsTypeInfo(TypeInfo childTypeInfo)
+        {
+            this.AddChildTypeInfo(childTypeInfo);
         }
 
         public override string Name
         {
             get
             {
-                return "ProjectCollections";
+                return "Projects";
             }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment)");
+            // TODO: SUPPORT PAGING
             return this.Wrap(() =>
             {
-                // TODO: SUPPORT PAGING
                 return segment.GetProvider()
                     .PSVstsDriveInfo
-                    .GetHttpClient<ProjectCollectionHttpClient>()
-                    .GetProjectCollections(
+                    .GetHttpClient<ProjectHttpClient>()
+                    .GetProjects(
+                        stateFilter: null,
                         top: null,
                         skip: null,
                         userState: null)
@@ -41,7 +47,7 @@
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.GetChildDriveItems(Segment,Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment, Segment)");
             if (childSegment.HasWildcard)
             {
                 return base.GetChildDriveItems(segment, childSegment);
@@ -50,15 +56,15 @@
             return this.Wrap(() =>
             {
                 return new[] {
-                    // TODO: UNRAVEL AGGREGATE EXCEPTION IF ONLY ONE INNER EXCEPTION.
                     this.ConvertToChildDriveItem(
                         segment,
                         segment
                         .GetProvider()
-                        .PSVstsDriveInfo
-                        .GetHttpClient<ProjectCollectionHttpClient>()
-                        .GetProjectCollection(
+                        .PSVstsDriveInfo.GetHttpClient<ProjectHttpClient>()
+                        .GetProject(
                             id: childSegment.Name,
+                            includeCapabilities: true,
+                            includeHistory: true,
                             userState: null)
                         .Result)
                 };

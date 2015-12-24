@@ -9,7 +9,7 @@
     {
         public static string FindProjectCollectionName(Segment startingSegment)
         {
-            return Find(startingSegment, "collection name", typeof(ProjectCollection_1_0_preview_2_TypeInfo));
+            return Find(startingSegment, "collection name", typeof(ProjectCollectionTypeInfo));
         }
 
         public static string FindRepoName(Segment startingSegment)
