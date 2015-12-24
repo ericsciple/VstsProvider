@@ -2,28 +2,30 @@
 {
     using System.Collections.Generic;
     using System.Management.Automation;
+    using Microsoft.TeamFoundation.Core.WebApi;
 
-    public sealed class ProjectCollections_1_0_preview_2_TypeInfo : WellKnownNameContainerTypeInfo
+    public sealed class ProjectCollectionsTypeInfo : WellKnownNameContainerTypeInfo
     {
-        public ProjectCollections_1_0_preview_2_TypeInfo()
+        public ProjectCollectionsTypeInfo()
         {
-            this.AddChildTypeInfo(new ProjectCollection_1_0_preview_2_TypeInfo());
+            this.AddChildTypeInfo(new ProjectCollectionTypeInfo());
         }
 
         public override string Name
         {
             get
             {
-                return "ProjectCollections_1.0-preview.2";
+                return "ProjectCollections";
             }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
-            segment.GetProvider().WriteVerbose("DriveItems.ProjectCollections_1_0_preview_2.GetChildDriveItems(Segment)");
-            return this.InvokeGetWebRequest(
-                segment,
-                "_apis/projectcollections?api-version=1.0-preview.2");
+            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.GetChildDriveItems(Segment)");
+            foreach (var o in segment.GetProvider().PSVstsDriveInfo.GetHttpClient<ProjectCollectionHttpClient>().GetProjectCollections(top: 0, skip: 0, userState: null).Result)
+            {
+                yield return this.ConvertToDriveItem(segment, o);
+            }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)

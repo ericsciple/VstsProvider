@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.Builds
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.Builds
 {
     using System;
     using System.Management.Automation;
@@ -21,14 +21,14 @@
             if (buildNumberPropertyInfo == null)
             {
                 name = ((int)psObject.Properties["id"].Value).ToString();
-                parentSegment.GetProvider().WriteWarning(string.Format("Unknown build number. Setting PSVsoName to build ID instead: {0}", name));
+                parentSegment.GetProvider().WriteWarning(string.Format("Unknown build number. Setting PSVstsName to build ID instead: {0}", name));
             }
             else
             {
                 name = buildNumberPropertyInfo.Value as string;
             }
 
-            psObject.AddPSVsoName(name);
+            psObject.AddPSVstsName(name);
             return psObject;
         }
     }

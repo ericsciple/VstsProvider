@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.Processes
+﻿namespace VstsProvider.DriveItems.ProjectCollections.Processes
 {
     using System.Collections.Generic;
     using System.Management.Automation;

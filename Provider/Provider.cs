@@ -1,16 +1,16 @@
-namespace VsoProvider
+namespace VstsProvider
 {
     using System;
     using System.Globalization;
     using System.Linq;
     using System.Management.Automation;
     using System.Management.Automation.Provider;
-    using VsoProvider.DriveItems;
+    using VstsProvider.DriveItems;
 
-    [CmdletProvider("VSO", ProviderCapabilities.ExpandWildcards)]
+    [CmdletProvider("VSTS", ProviderCapabilities.ExpandWildcards)]
     public sealed class Provider : NavigationCmdletProvider
     {
-        public DriveInfo PSVsoDriveInfo
+        public DriveInfo PSVstsDriveInfo
         {
             get
             {
@@ -29,7 +29,7 @@ namespace VsoProvider
 
         protected override string[] ExpandPath(string rawPath)
         {
-            this.WriteVerbose("VsoProvider.Provider.ExpandPath(...)");
+            this.WriteVerbose("VstsProvider.Provider.ExpandPath(...)");
             Path path = this.ParsePath(rawPath);
             Segment lastSegment = path.Segments.Last();
             Segment lastParentSegment = lastSegment.GetParent();
@@ -43,7 +43,7 @@ namespace VsoProvider
 
             return (lastParentSegment.ItemTypeInfo as ContainerTypeInfo)
                 .GetChildDriveItems(lastParentSegment)
-                .Select(x => x.GetPSVsoName())
+                .Select(x => x.GetPSVstsName())
                 .Where(x => pattern.IsMatch(x))
                 .Select(x => string.Format(@"{0}\{1}", lastParentSegment.RelativePath, x))
                 .ToArray();
@@ -51,7 +51,7 @@ namespace VsoProvider
 
         protected override void GetChildItems(string rawPath, bool recurse)
         {
-            this.WriteVerbose("VsoProvider.Provider.GetChildItems(...)");
+            this.WriteVerbose("VstsProvider.Provider.GetChildItems(...)");
             Path path = this.ParsePath(rawPath);
             Segment lastSegment = path.Segments.Last();
             Segment lastContainerSegment =
@@ -65,12 +65,12 @@ namespace VsoProvider
                         CultureInfo.InvariantCulture,
                         @"{0}\{1}",
                         lastContainerSegment.RelativePath,
-                        psObject.GetPSVsoName())
+                        psObject.GetPSVstsName())
                     .TrimStart('\\');
                 this.WriteItemObject(
                     item: psObject,
                     path: relativePath,
-                    isContainer: psObject.GetPSVsoIsContainer());
+                    isContainer: psObject.GetPSVstsIsContainer());
             }
 
             if (recurse)
@@ -81,7 +81,7 @@ namespace VsoProvider
 
         protected override string GetChildName(string rawPath)
         {
-            this.WriteVerbose("VsoProvider.Provider.GetChildName(string)");
+            this.WriteVerbose("VstsProvider.Provider.GetChildName(string)");
             try
             {
                 return Path.GetChildName(provider: this, rawPath: rawPath);
@@ -96,12 +96,12 @@ namespace VsoProvider
 
         protected override void GetItem(string rawPath)
         {
-            this.WriteVerbose("VsoProvider.Provider.GetItem(...)");
+            this.WriteVerbose("VstsProvider.Provider.GetItem(...)");
             Path path = this.ParsePath(rawPath);
             foreach (PSObject psObject in path.GetDriveItem())
             {
                 string relativePath;
-                Segment parentSegment = psObject.GetPSVsoParentSegment();
+                Segment parentSegment = psObject.GetPSVstsParentSegment();
                 if (parentSegment == null)
                 {
                     relativePath = string.Empty;
@@ -112,21 +112,21 @@ namespace VsoProvider
                         string.Format(
                             CultureInfo.InvariantCulture,
                             @"{0}\{1}",
-                            psObject.GetPSVsoParentSegment().RelativePath,
-                            psObject.GetPSVsoName())
+                            psObject.GetPSVstsParentSegment().RelativePath,
+                            psObject.GetPSVstsName())
                         .TrimStart('\\');
                 }
 
                 this.WriteItemObject(
                     item: psObject,
                     path: relativePath,
-                    isContainer: psObject.GetPSVsoIsContainer());
+                    isContainer: psObject.GetPSVstsIsContainer());
             }
         }
 
         protected override string GetParentPath(string rawPath, string root)
         {
-            this.WriteVerbose("VsoProvider.Provider.GetParentPath(...)");
+            this.WriteVerbose("VstsProvider.Provider.GetParentPath(...)");
             Path path = this.ParsePath(rawPath);
             Segment lastSegment = path.Segments.Last();
             Segment lastParentSegment = lastSegment.GetParent();
@@ -143,7 +143,7 @@ namespace VsoProvider
 
         protected override bool IsItemContainer(string rawPath)
         {
-            this.WriteVerbose("VsoProvider.Provider.IsItemContainer(...)");
+            this.WriteVerbose("VstsProvider.Provider.IsItemContainer(...)");
             try
             {
                 Path path = this.ParsePath(rawPath);
@@ -162,7 +162,7 @@ namespace VsoProvider
 
         protected override bool IsValidPath(string rawPath)
         {
-            this.WriteVerbose("VsoProvider.Provider.IsValidPath(...)");
+            this.WriteVerbose("VstsProvider.Provider.IsValidPath(...)");
             try
             {
                 this.ParsePath(rawPath);
@@ -176,7 +176,7 @@ namespace VsoProvider
 
         protected override bool ItemExists(string rawPath)
         {
-            this.WriteVerbose("VsoProvider.Provider.ItemExists(...)");
+            this.WriteVerbose("VstsProvider.Provider.ItemExists(...)");
             try
             {
                 Path path = this.ParsePath(rawPath);
@@ -194,26 +194,26 @@ namespace VsoProvider
 
         protected override PSDriveInfo NewDrive(PSDriveInfo driveInfo)
         {
-            this.WriteVerbose("VsoProvider.Provider.NewDrive(...)");
+            this.WriteVerbose("VstsProvider.Provider.NewDrive(...)");
             return new DriveInfo(driveInfo, this.DynamicParameters as DriveParameters);
         }
 
         protected override object NewDriveDynamicParameters()
         {
-            this.WriteVerbose("VsoProvider.Provider.NewDriveDynamicParameters()");
+            this.WriteVerbose("VstsProvider.Provider.NewDriveDynamicParameters()");
             return new DriveParameters();
         }
 
         protected override void NewItem(string rawPath, string itemTypeName, object newItemValue)
         {
-            this.WriteVerbose("VsoProvider.Provider.NewItem(...)");
+            this.WriteVerbose("VstsProvider.Provider.NewItem(...)");
             Path path = this.ParsePath(rawPath);
             path.NewItem(this.DynamicParameters);
         }
 
         protected override object NewItemDynamicParameters(string rawPath, string itemTypeName, object newItemValue)
         {
-            this.WriteVerbose("VsoProvider.Provider.NewItemDynamicParameters(...)");
+            this.WriteVerbose("VstsProvider.Provider.NewItemDynamicParameters(...)");
             Path path = this.ParsePath(rawPath);
             return path.NewItemDynamicParameters();
         }

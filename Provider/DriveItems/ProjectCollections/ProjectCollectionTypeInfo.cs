@@ -5,21 +5,21 @@
     using Processes;
     using TeamProjects;
 
-    public sealed class ProjectCollection_1_0_preview_2_TypeInfo : ContainerTypeInfo
+    public sealed class ProjectCollectionTypeInfo : ContainerTypeInfo
     {
-        public ProjectCollection_1_0_preview_2_TypeInfo()
+        public ProjectCollectionTypeInfo()
         {
-            this.AddChildTypeInfo(new BuildQueues_2_0_TypeInfo());
-            this.AddChildTypeInfo(new GitTeamProjects_1_0_TypeInfo());
-            this.AddChildTypeInfo(new Processes_1_0_TypeInfo());
-            this.AddChildTypeInfo(new TeamProjects_1_0_TypeInfo());
+            //this.AddChildTypeInfo(new BuildQueues_2_0_TypeInfo());
+            //this.AddChildTypeInfo(new GitTeamProjects_1_0_TypeInfo());
+            //this.AddChildTypeInfo(new Processes_1_0_TypeInfo());
+            //this.AddChildTypeInfo(new TeamProjects_1_0_TypeInfo());
         }
 
         public override string Name
         {
             get
             {
-                return "ProjectCollection_1.0-preview.2";
+                return "ProjectCollection";
             }
         }
 

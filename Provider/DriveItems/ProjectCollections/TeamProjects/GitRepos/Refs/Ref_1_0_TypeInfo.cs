@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Refs
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Refs
 {
     using System;
     using System.Management.Automation;
@@ -30,7 +30,7 @@
                 throw new Exception(string.Format("Unexpected ref name: {0}", name));
             }
 
-            psObject.AddPSVsoName(name);
+            psObject.AddPSVstsName(name);
             return psObject;
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems
+﻿namespace VstsProvider.DriveItems
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +15,7 @@
 
         public static IEnumerable<PSObject> ToJson(PSObject psObject)
         {
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             const string Script = @"
 [cmdletbinding()]
 param(
@@ -40,8 +40,8 @@ $PSObject |
                 obj is PSObject
                 ? obj as PSObject
                 : new PSObject(obj ?? new object());
-            psObject.AddPSVsoIsContainer(this is ContainerTypeInfo);
-            psObject.AddPSVsoParentSegment(parentSegment);
+            psObject.AddPSVstsIsContainer(this is ContainerTypeInfo);
+            psObject.AddPSVstsParentSegment(parentSegment);
             if (parentSegment == null)
             {
                 Provider provider = obj as Provider;
@@ -50,14 +50,14 @@ $PSObject |
                     throw new NotSupportedException("Code should not reach here.");
                 }
 
-                psObject.AddPSVsoProvider(provider);
+                psObject.AddPSVstsProvider(provider);
             }
             else
             {
-                psObject.AddPSVsoProvider(parentSegment.GetProvider());
+                psObject.AddPSVstsProvider(parentSegment.GetProvider());
             }
 
-            psObject.AddPSVsoTypeInfo(this);
+            psObject.AddPSVstsTypeInfo(this);
             psObject.Methods.Add(new PSCodeMethod("ToJson", typeof(TypeInfo).GetMethod("ToJson", BindingFlags.Public | BindingFlags.Static)));
             return psObject;
         }
@@ -65,7 +65,7 @@ $PSObject |
         protected IEnumerable<PSObject> InvokeDeleteWebRequest(Provider provider, string relativeUrl)
         {
             // Determine the URL.
-            string serverUrl = provider.PSVsoDriveInfo.Root.TrimEnd('/');
+            string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
             string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
 
             // Initialize the headers.
@@ -100,7 +100,7 @@ ConvertFrom-Json $response.Content
         protected IEnumerable<PSObject> InvokePostWebRequest(Provider provider, string relativeUrl, string bodyJson)
         {
             // Determine the URL.
-            string serverUrl = provider.PSVsoDriveInfo.Root.TrimEnd('/');
+            string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
             string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
 
             // Initialize the headers.
@@ -136,7 +136,7 @@ ConvertFrom-Json $response.Content
         protected IEnumerable<PSObject> InvokePutWebRequest(Provider provider, string relativeUrl, PSObject psObject)
         {
             // Determine the URL.
-            string serverUrl = provider.PSVsoDriveInfo.Root.TrimEnd('/');
+            string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
             string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
 
             // Initialize the headers.
@@ -225,11 +225,11 @@ ConvertFrom-Json $response.Content
         private static Dictionary<string, string> InitializeHeaders(Provider provider, bool isPostOrPut)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            if (provider.PSVsoDriveInfo.UsePersonalAccessToken)
+            if (provider.PSVstsDriveInfo.UsePersonalAccessToken)
             {
                 headers["Authorization"] = string.Format(
                     "Basic {0}",
-                    Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format(":{0}", SecureStringHelper.ConvertToString(provider.PSVsoDriveInfo.PersonalAccessToken)))));
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format(":{0}", SecureStringHelper.ConvertToString(provider.PSVstsDriveInfo.PersonalAccessToken)))));
             }
 
             if (isPostOrPut)

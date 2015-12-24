@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Pushes
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Pushes
 {
     using System.Collections.Generic;
     using System.Linq;

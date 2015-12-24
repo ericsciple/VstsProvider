@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems
+﻿namespace VstsProvider.DriveItems
 {
     using System;
     using System.Collections.Generic;
@@ -13,7 +13,7 @@
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.AddPSVsoName(this.Name);
+            psObject.AddPSVstsName(this.Name);
             return psObject;
         }
 
@@ -22,7 +22,7 @@
         {
             // Determine the URL.
             string relativeUrl = this.UrlStringFormat(relativeUrlFormat, unencodedArgs);
-            string serverUrl = parentSegment.GetProvider().PSVsoDriveInfo.Root.TrimEnd('/');
+            string serverUrl = parentSegment.GetProvider().PSVstsDriveInfo.Root.TrimEnd('/');
             string originalUrl = string.Format("{0}/{1}", serverUrl, relativeUrl);
 
             string continuationToken = null;
@@ -88,11 +88,11 @@ ConvertFrom-Json $response.Content |
 
         private static string GetCredentials(Provider provider)
         {
-            if (provider.PSVsoDriveInfo.UsePersonalAccessToken)
+            if (provider.PSVstsDriveInfo.UsePersonalAccessToken)
             {
                 return string.Format(
                     "-Headers @{{ 'Authorization' = 'Basic {0}' }}",
-                    Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format(":{0}", SecureStringHelper.ConvertToString(provider.PSVsoDriveInfo.PersonalAccessToken)))));
+                    Convert.ToBase64String(Encoding.UTF8.GetBytes(string.Format(":{0}", SecureStringHelper.ConvertToString(provider.PSVstsDriveInfo.PersonalAccessToken)))));
             }
             else
             {

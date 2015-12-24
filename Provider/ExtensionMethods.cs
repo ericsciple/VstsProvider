@@ -1,58 +1,58 @@
-namespace VsoProvider
+namespace VstsProvider
 {
     using System.Management.Automation;
     using DriveItems;
 
     public static class ExtensionMethods
     {
-        public static void AddPSVsoIsContainer(this PSObject psObject, bool value)
+        public static void AddPSVstsIsContainer(this PSObject psObject, bool value)
         {
-            psObject.Properties.Add(new PSNoteProperty("PSVsoIsContainer", value));
+            psObject.Properties.Add(new PSNoteProperty("PSVstsIsContainer", value));
         }
 
-        public static void AddPSVsoName(this PSObject psObject, string value)
+        public static void AddPSVstsName(this PSObject psObject, string value)
         {
-            psObject.Properties.Add(new PSNoteProperty("PSVsoName", value));
+            psObject.Properties.Add(new PSNoteProperty("PSVstsName", value));
         }
 
-        public static void AddPSVsoParentSegment(this PSObject psObject, Segment value)
+        public static void AddPSVstsParentSegment(this PSObject psObject, Segment value)
         {
-            psObject.Properties.Add(new PSNoteProperty("PSVsoParentSegment", value));
+            psObject.Properties.Add(new PSNoteProperty("PSVstsParentSegment", value));
         }
 
-        public static void AddPSVsoProvider(this PSObject psObject, Provider value)
+        public static void AddPSVstsProvider(this PSObject psObject, Provider value)
         {
-            psObject.Properties.Add(new PSNoteProperty("PSVsoProvider", value));
+            psObject.Properties.Add(new PSNoteProperty("PSVstsProvider", value));
         }
 
-        public static void AddPSVsoTypeInfo(this PSObject psObject, TypeInfo value)
+        public static void AddPSVstsTypeInfo(this PSObject psObject, TypeInfo value)
         {
-            psObject.Properties.Add(new PSNoteProperty("PSVsoTypeInfo", value));
+            psObject.Properties.Add(new PSNoteProperty("PSVstsTypeInfo", value));
         }
 
-        public static bool GetPSVsoIsContainer(this PSObject psObject)
+        public static bool GetPSVstsIsContainer(this PSObject psObject)
         {
-            return (bool)psObject.Properties["PSVsoIsContainer"].Value;
+            return (bool)psObject.Properties["PSVstsIsContainer"].Value;
         }
 
-        public static string GetPSVsoName(this PSObject psObject)
+        public static string GetPSVstsName(this PSObject psObject)
         {
-            return psObject.Properties["PSVsoName"].Value as string;
+            return psObject.Properties["PSVstsName"].Value as string;
         }
 
-        public static Segment GetPSVsoParentSegment(this PSObject psObject)
+        public static Segment GetPSVstsParentSegment(this PSObject psObject)
         {
-            return psObject.Properties["PSVsoParentSegment"].Value as Segment;
+            return psObject.Properties["PSVstsParentSegment"].Value as Segment;
         }
 
-        public static Provider GetPSVsoProvider(this PSObject psObject)
+        public static Provider GetPSVstsProvider(this PSObject psObject)
         {
-            return psObject.Properties["PSVsoProvider"].Value as Provider;
+            return psObject.Properties["PSVstsProvider"].Value as Provider;
         }
 
-        public static TypeInfo GetPSVsoTypeInfo(this PSObject psObject)
+        public static TypeInfo GetPSVstsTypeInfo(this PSObject psObject)
         {
-            return psObject.Properties["PSVsoTypeInfo"].Value as TypeInfo;
+            return psObject.Properties["PSVstsTypeInfo"].Value as TypeInfo;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Commits
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Commits
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -25,8 +25,8 @@
             PSObject psObject,
             string path)
         {
-            Commits_1_0_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as Commits_1_0_TypeInfo;
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Commits_1_0_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as Commits_1_0_TypeInfo;
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             return typeInfo.InvokeGetWebRequest(
                 parentSegment,
                 "{0}/_apis/git/repositories/{2}/commits?itemPath={3}&api-version=1.0&projectId={1}",

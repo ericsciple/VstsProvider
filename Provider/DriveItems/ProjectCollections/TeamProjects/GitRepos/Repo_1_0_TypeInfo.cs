@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos
 {
     using Commits;
     using Items;
@@ -28,7 +28,7 @@
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.AddPSVsoName(psObject.Properties["name"].Value as string);
+            psObject.AddPSVstsName(psObject.Properties["name"].Value as string);
             return psObject;
         }
     }

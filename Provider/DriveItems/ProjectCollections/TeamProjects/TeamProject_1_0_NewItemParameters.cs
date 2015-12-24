@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects
 {
     using System.Management.Automation;
 

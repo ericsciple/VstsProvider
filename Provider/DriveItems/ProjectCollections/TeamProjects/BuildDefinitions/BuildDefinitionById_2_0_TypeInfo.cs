@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -20,8 +20,8 @@
         ////public static IEnumerable<PSObject> Update(PSObject psObject)
         ////{
         ////    // Format the relative URL.
-        ////    BuildDefinitionById_2_0_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as BuildDefinitionById_2_0_TypeInfo;
-        ////    Segment parentSegment = psObject.GetPSVsoParentSegment();
+        ////    BuildDefinitionById_2_0_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as BuildDefinitionById_2_0_TypeInfo;
+        ////    Segment parentSegment = psObject.GetPSVstsParentSegment();
         ////    string relativeUrl = typeInfo.UrlStringFormat(
         ////        "{0}/{1}/_apis/build/definitions/{2}?api-version=2.0",
         ////        SegmentHelper.FindProjectCollectionName(parentSegment),
@@ -41,14 +41,14 @@
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.AddPSVsoName(((int)psObject.Properties["id"].Value).ToString());
+            psObject.AddPSVstsName(((int)psObject.Properties["id"].Value).ToString());
             ////psObject.Methods.Add(new PSCodeMethod("Update", this.GetType().GetMethod("Update", BindingFlags.Public | BindingFlags.Static)));
             return psObject;
         }
 
         private static PSObject RemovePSProperties(PSObject psObject)
         {
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             const string Script = @"
 [cmdletbinding()]
 param(

@@ -1,4 +1,4 @@
-namespace VsoProvider
+namespace VstsProvider
 {
     using System;
     using System.Runtime.InteropServices;

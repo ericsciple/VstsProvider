@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -27,8 +27,8 @@
             PSObject project = GetProject(psObject);
 
             // Format the relative URL.
-            Repos_1_0_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as Repos_1_0_TypeInfo;
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Repos_1_0_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as Repos_1_0_TypeInfo;
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             string relativeUrl = typeInfo.UrlStringFormat(
                 "{0}/_apis/git/repositories?api-version=1.0",
                 SegmentHelper.FindProjectCollectionName(parentSegment));
@@ -47,7 +47,7 @@
 
             // Invoke the HTTP POST request.
             return typeInfo.InvokePostWebRequest(
-                provider: psObject.GetPSVsoProvider(),
+                provider: psObject.GetPSVstsProvider(),
                 relativeUrl: relativeUrl,
                 bodyJson: bodyJson);
         }
@@ -85,7 +85,7 @@
 
         private static PSObject GetProject(PSObject psObject)
         {
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             const string Script = @"
 [cmdletbinding()]
 param(
@@ -103,7 +103,7 @@ Get-Item $projectPath
                 writeToPipeline: PipelineResultTypes.None,
                 input: null,
                 args: new object[] {
-                    parentSegment.GetProvider().PSVsoDriveInfo.Name,
+                    parentSegment.GetProvider().PSVstsDriveInfo.Name,
                     SegmentHelper.FindProjectCollectionName(parentSegment),
                     SegmentHelper.FindTeamProjectName(parentSegment),
                 })

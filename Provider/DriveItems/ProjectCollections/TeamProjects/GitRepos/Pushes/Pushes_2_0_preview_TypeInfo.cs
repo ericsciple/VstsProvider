@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Pushes
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Pushes
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -132,12 +132,12 @@
             string contentType)
         {
             // Format the relative URL.
-            Pushes_2_0_preview_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as Pushes_2_0_preview_TypeInfo;
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Pushes_2_0_preview_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as Pushes_2_0_preview_TypeInfo;
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             //// The pushes 2.0 controller ignores the project filter.
             //// Therefore resolve the repo ID in a hacky way.
             DriveItems.Path repoPath = new DriveItems.Path(
-                provider: psObject.GetPSVsoProvider(),
+                provider: psObject.GetPSVstsProvider(),
                 rawPath: parentSegment.RelativePath);
             string repoId = repoPath.GetDriveItem().Single().Properties["id"].Value as string;
             string relativeUrl = typeInfo.UrlStringFormat(

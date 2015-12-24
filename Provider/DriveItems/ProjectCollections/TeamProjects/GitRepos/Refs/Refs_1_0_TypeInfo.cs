@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Refs
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Refs
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -41,7 +41,7 @@
                     pattern: string.Format("refs/{0}", childSegment.Name.Replace('\\', '/')),
                     options: WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase);
                 return this.GetChildDriveItems(segment)
-                    .Where(x => pattern.IsMatch(x.GetPSVsoName()));
+                    .Where(x => pattern.IsMatch(x.GetPSVstsName()));
             }
 
             string relativeUrlFormat = string.Format(

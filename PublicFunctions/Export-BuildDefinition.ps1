@@ -1,14 +1,16 @@
-function Export-VsoBuildDefinition {
-    [cmdletbinding()]
+function Export-BuildDefinition {
+    [CmdletBinding()]
     param(
-        [string]$LiteralPath = $(throw 'Missing LiteralPath.'),
-        [string]$DriveName = $(throw 'Missing DriveName.'),
-        [string]$CollectionName = $(throw 'Missing CollectionName.'),
-        [string]$ProjectName = $(throw 'Missing ProjectName.'),
-        [string]$DefinitionName = $(throw 'Missing DefinitionName.')
-        #[Parameter(ParameterSetName = 'ById')]
-        #[string]$DefinitionId = $(throw 'Missing DefinitionId.')
-    )
+        [Parameter(Mandatory = $true)]
+        [string]$LiteralPath,
+        [Parameter(Mandatory = $true)]
+        [string]$DriveName,
+        [Parameter(Mandatory = $true)]
+        [string]$CollectionName,
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectName,
+        [Parameter(Mandatory = $true)]
+        [string]$DefinitionName)
 
     if (!$DefinitionId) {
         $definition = Get-Item "$($DriveName):\ProjectCollections_1.0-preview.2\$CollectionName\TeamProjects_1.0\$ProjectName\BuildDefinitions_2.0\$DefinitionName"

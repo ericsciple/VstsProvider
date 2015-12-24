@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -19,8 +19,8 @@
         public static IEnumerable<PSObject> Delete(PSObject psObject)
         {
             // Format the relative URL.
-            BuildDefinition_2_0_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as BuildDefinition_2_0_TypeInfo;
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            BuildDefinition_2_0_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as BuildDefinition_2_0_TypeInfo;
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             string relativeUrl = typeInfo.UrlStringFormat(
                 "{0}/{1}/_apis/build/definitions/{2}?api-version=2.0",
                 SegmentHelper.FindProjectCollectionName(parentSegment),
@@ -50,7 +50,7 @@
 
         public static IEnumerable<PSObject> ExportToFile(PSObject psObject, string literalPath)
         {
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             System.IO.File.AppendAllLines(@"c:\temp\temp.txt", new[] { literalPath });
             const string Script = @"
 [cmdletbinding()]
@@ -83,8 +83,8 @@ $Definition |
         public static IEnumerable<PSObject> Queue(PSObject psObject)
         {
             // Format the relative URL.
-            BuildDefinition_2_0_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as BuildDefinition_2_0_TypeInfo;
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            BuildDefinition_2_0_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as BuildDefinition_2_0_TypeInfo;
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             string relativeUrl = typeInfo.UrlStringFormat(
                 "{0}/{1}/_apis/build/builds?api-version=2.0",
                 SegmentHelper.FindProjectCollectionName(parentSegment),
@@ -111,8 +111,8 @@ $Definition |
         public static IEnumerable<PSObject> Rename(PSObject psObject, string newName)
         {
             // Format the relative URL.
-            BuildDefinition_2_0_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as BuildDefinition_2_0_TypeInfo;
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            BuildDefinition_2_0_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as BuildDefinition_2_0_TypeInfo;
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             string relativeUrl = typeInfo.UrlStringFormat(
                 "{0}/{1}/_apis/build/definitions/{2}?api-version=2.0",
                 SegmentHelper.FindProjectCollectionName(parentSegment),
@@ -134,7 +134,7 @@ $Definition |
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.AddPSVsoName(psObject.Properties["name"].Value as string);
+            psObject.AddPSVstsName(psObject.Properties["name"].Value as string);
             psObject.Methods.Add(new PSCodeMethod("Delete", this.GetType().GetMethod("Delete", BindingFlags.Public | BindingFlags.Static)));
             psObject.Methods.Add(new PSCodeMethod("ExportToFile", this.GetType().GetMethod("ExportToFile", BindingFlags.Public | BindingFlags.Static)));
             psObject.Methods.Add(new PSCodeMethod("ExportToCurrentDirectory", this.GetType().GetMethod("ExportToCurrentDirectory", BindingFlags.Public | BindingFlags.Static)));
@@ -146,7 +146,7 @@ $Definition |
 
         private static PSObject GetByIdAndRemovePSProperties(PSObject psObject)
         {
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             const string Script = @"
 [cmdletbinding()]
 param(
@@ -166,7 +166,7 @@ Get-Item $definitionPath |
                 writeToPipeline: PipelineResultTypes.None,
                 input: null,
                 args: new object[] {
-                    parentSegment.GetProvider().PSVsoDriveInfo.Name,
+                    parentSegment.GetProvider().PSVstsDriveInfo.Name,
                     SegmentHelper.FindProjectCollectionName(parentSegment),
                     SegmentHelper.FindTeamProjectName(parentSegment),
                     psObject.Properties["id"].Value,

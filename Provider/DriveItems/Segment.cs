@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems
+﻿namespace VstsProvider.DriveItems
 {
     using System.Collections.Generic;
     using System.Linq;

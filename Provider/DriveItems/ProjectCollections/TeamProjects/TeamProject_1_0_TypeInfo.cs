@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects
 {
     using System.Management.Automation;
     using Builds;
@@ -25,7 +25,7 @@
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.AddPSVsoName(psObject.Properties["name"].Value as string);
+            psObject.AddPSVstsName(psObject.Properties["name"].Value as string);
             return psObject;
         }
     }

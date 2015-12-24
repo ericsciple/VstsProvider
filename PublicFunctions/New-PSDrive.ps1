@@ -1,4 +1,6 @@
-function Mount-VsoDrive {
+$newPSDriveCommand = Get-Command New-PSDrive
+
+function New-PSDrive {
     [cmdletbinding()]
     param(
         [string]$ComputerName,
@@ -29,5 +31,5 @@ function Mount-VsoDrive {
 
     [bool]$useDefaultCredentials = "$PersonalAccessToken" -eq ""
     [bool]$usePersonalAccessToken = "$PersonalAccessToken" -ne ""
-    New-PSDrive -Scope global -Name $Name -PSProvider Vso -Root $ServerUrl -UseDefaultCredentials:$useDefaultCredentials -UsePersonalAccessToken:$usePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
+    & $newPSDriveCommand -Scope global -Name $Name -PSProvider Vsts -Root $ServerUrl -UseDefaultCredentials:$useDefaultCredentials -UsePersonalAccessToken:$usePersonalAccessToken -PersonalAccessToken $PersonalAccessToken
 }

@@ -1,6 +1,6 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects
 {
-    using VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos;
+    using VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos;
 
     public sealed class GitTeamProject_1_0_TypeInfo : TeamProject_1_0_TypeInfo
     {

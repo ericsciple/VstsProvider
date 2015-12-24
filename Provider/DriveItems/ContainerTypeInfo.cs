@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems
+﻿namespace VstsProvider.DriveItems
 {
     using System;
     using System.Collections.Generic;
@@ -37,12 +37,12 @@
                     pattern: childSegment.Name,
                     options: WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase);
                 return this.GetChildDriveItems(segment)
-                    .Where(x => pattern.IsMatch(x.GetPSVsoName()));
+                    .Where(x => pattern.IsMatch(x.GetPSVstsName()));
             }
 
             // Handle non-wildcard child segment.
             return this.GetChildDriveItems(segment)
-                .Where(x => string.Equals(childSegment.Name, x.GetPSVsoName(), StringComparison.OrdinalIgnoreCase));
+                .Where(x => string.Equals(childSegment.Name, x.GetPSVstsName(), StringComparison.OrdinalIgnoreCase));
         }
 
         public virtual IEnumerable<PSObject> NewChildDriveItem(Segment segment, Segment childSegment, object dynamicParameters)

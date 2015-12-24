@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.BuildQueues
+﻿namespace VstsProvider.DriveItems.ProjectCollections.BuildQueues
 {
     using System;
     using System.Collections.Generic;
@@ -42,7 +42,7 @@
                     "{0}/_apis/build/queues?name={1}&api-version=2.0",
                     SegmentHelper.FindProjectCollectionName(segment),
                     childSegment.Name)
-                .Where(x => string.Equals(x.GetPSVsoName(), childSegment.Name, StringComparison.OrdinalIgnoreCase))
+                .Where(x => string.Equals(x.GetPSVstsName(), childSegment.Name, StringComparison.OrdinalIgnoreCase))
                 .SingleOrDefault();
             return new[] { childDriveItem };
         }

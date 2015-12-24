@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Items
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.GitRepos.Items
 {
     using System.Collections.Generic;
     using System.Linq;

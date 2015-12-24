@@ -1,8 +1,8 @@
-function Get-VsoBuildDefinition {
-    [cmdletbinding()]
+function Get-BuildDefinition {
+    [CmdletBinding()]
     param(
-        [string]$DriveName = 'OnPrem'
-    )
+        [Parameter(Mandatory = $true)]
+        [string]$DriveName)
 
     Get-ChildItem "$($DriveName):\ProjectCollections_1.0-preview.2" |
         ForEach-Object {

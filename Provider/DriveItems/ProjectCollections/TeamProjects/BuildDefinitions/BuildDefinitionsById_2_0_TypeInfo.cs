@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
 {
     using System.Collections.Generic;
     using System.Management.Automation;

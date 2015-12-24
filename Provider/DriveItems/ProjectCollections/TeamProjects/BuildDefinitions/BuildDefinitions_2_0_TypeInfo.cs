@@ -1,4 +1,4 @@
-﻿namespace VsoProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
+﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.BuildDefinitions
 {
     using System;
     using System.Collections.Generic;
@@ -24,15 +24,15 @@
         public static PSObject Create(PSObject psObject, string definitionJson)
         {
             // Format the relative URL.
-            BuildDefinitions_2_0_TypeInfo typeInfo = psObject.GetPSVsoTypeInfo() as BuildDefinitions_2_0_TypeInfo;
-            Segment parentSegment = psObject.GetPSVsoParentSegment();
+            BuildDefinitions_2_0_TypeInfo typeInfo = psObject.GetPSVstsTypeInfo() as BuildDefinitions_2_0_TypeInfo;
+            Segment parentSegment = psObject.GetPSVstsParentSegment();
             string relativeUrl = typeInfo.UrlStringFormat(
                 "{0}/{1}/_apis/build/definitions?api-version=2.0",
                 SegmentHelper.FindProjectCollectionName(parentSegment),
                 SegmentHelper.FindTeamProjectName(parentSegment));
 
-            ////psObject.GetPSVsoProvider().WriteWarning(relativeUrl);
-            ////psObject.GetPSVsoProvider().WriteWarning(definitionJson);
+            ////psObject.GetPSVstsProvider().WriteWarning(relativeUrl);
+            ////psObject.GetPSVstsProvider().WriteWarning(definitionJson);
 
             // POST the HTTP web request.
             return typeInfo.InvokePostWebRequest(
@@ -72,7 +72,7 @@
                     SegmentHelper.FindProjectCollectionName(segment),
                     SegmentHelper.FindTeamProjectName(segment),
                     childSegment.Name)
-                .Where(x => string.Equals(x.GetPSVsoName(), childSegment.Name, StringComparison.OrdinalIgnoreCase))
+                .Where(x => string.Equals(x.GetPSVstsName(), childSegment.Name, StringComparison.OrdinalIgnoreCase))
                 .SingleOrDefault();
             return new[] { childDriveItem };
         }
