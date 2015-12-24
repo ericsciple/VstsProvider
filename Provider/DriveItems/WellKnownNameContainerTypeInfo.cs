@@ -17,6 +17,11 @@
             return psObject;
         }
 
+        protected PSObject ConvertToChildDriveItem(Segment parentSegment, object obj)
+        {
+            return this.ChildTypeInfo.Values.Single().ConvertToDriveItem(parentSegment, obj);
+        }
+
         // TODO: PASS FLAG INDICATING: SINGLE_ITEM, FIRST_PAGE, ALL_PAGES. DEFINE ABSTRACT PROPERTIES INDICATING WHETHER PAGING IS BY CONTINUATION TOKEN OR $TOP/$SKIP AND THE PAGE SIZE.
         protected IEnumerable<PSObject> InvokeGetWebRequest(Segment parentSegment, string relativeUrlFormat, params object[] unencodedArgs)
         {

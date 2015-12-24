@@ -22,24 +22,27 @@
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
             segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.GetChildDriveItems(Segment)");
+            // TODO: SUPPORT PAGING
             foreach (var o in segment.GetProvider().PSVstsDriveInfo.GetHttpClient<ProjectCollectionHttpClient>().GetProjectCollections(top: 0, skip: 0, userState: null).Result)
             {
-                yield return this.ConvertToDriveItem(segment, o);
+                yield return this.ConvertToChildDriveItem(segment, o);
             }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteVerbose("DriveItems.ProjectCollections_1_0_preview_2.GetChildDriveItems(Segment,Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.GetChildDriveItems(Segment,Segment)");
             if (childSegment.HasWildcard)
             {
                 return base.GetChildDriveItems(segment, childSegment);
             }
 
-            return this.InvokeGetWebRequest(
-                segment,
-                "_apis/projectcollections/{0}?&api-version=1.0-preview.2",
-                childSegment.Name);
+            return new[] {
+                // TODO: UNRAVEL AGGREGATE EXCEPTION IF ONLY ONE INNER EXCEPTION.
+                this.ConvertToChildDriveItem(
+                    segment,
+                    segment.GetProvider().PSVstsDriveInfo.GetHttpClient<ProjectCollectionHttpClient>().GetProjectCollection(childSegment.Name).Result)
+            };
         }
     }
 }
