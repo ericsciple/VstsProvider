@@ -108,6 +108,55 @@ ConvertFrom-Json $response.Content |
             }
         }
 
+        protected IEnumerable<T> Wrap<T>(Func<int?, int?, IEnumerable<T>> func)
+        {
+            int count = 0;
+            int? top = null;
+            int? skip = null;
+            while (true)
+            {
+                // Execute the func and unwrap aggregate exception if only one exception.
+                T[] results;
+                try
+                {
+                    results = func(top, skip).ToArray();
+                }
+                catch (AggregateException ex)
+                {
+                    if (ex.InnerExceptions.Count == 1)
+                    {
+                        throw ex.InnerExceptions[0];
+                    }
+
+                    throw;
+                }
+
+                // Yield and count the results.
+                int intermediateCount = 0;
+                foreach (T result in results)
+                {
+                    intermediateCount++;
+                    count++;
+                    yield return result;
+                }
+
+                // Set top if not set.
+                if (top == null)
+                {
+                    top = intermediateCount;
+                }
+
+                // Short-circuit if done.
+                if (intermediateCount == 0 || intermediateCount < top.Value)
+                {
+                    break;
+                }
+
+                // Set skip.
+                skip = count;
+            }
+        }
+
         private static string GetCredentials(Provider provider)
         {
             if (provider.PSVstsDriveInfo.UsePersonalAccessToken)

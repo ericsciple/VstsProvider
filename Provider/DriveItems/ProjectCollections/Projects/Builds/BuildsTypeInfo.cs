@@ -1,44 +1,37 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects
+﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects.Builds
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
-    using Microsoft.TeamFoundation.Core.WebApi;
+    using Microsoft.TeamFoundation.Build.WebApi;
 
-    public class ProjectsTypeInfo : WellKnownNameContainerTypeInfo
+    public sealed class BuildsTypeInfo : WellKnownNameContainerTypeInfo
     {
-        public ProjectsTypeInfo()
-            : this(new ProjectTypeInfo())
+        public BuildsTypeInfo()
         {
-        }
-
-        public ProjectsTypeInfo(TypeInfo childTypeInfo)
-        {
-            this.AddChildTypeInfo(childTypeInfo);
+            this.AddChildTypeInfo(new BuildTypeInfo());
         }
 
         public override string Name
         {
             get
             {
-                return "Projects";
+                return "Builds";
             }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment)");
-            return this.Wrap((int? top, int? skip) =>
+            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.Builds.GetChildDriveItems(Segment)");
+            return this.Wrap(() =>
             {
                 return segment.GetProvider()
                     .PSVstsDriveInfo
-                    .GetHttpClient<ProjectHttpClient>(
+                    .GetHttpClient<BuildHttpClient>(
                         SegmentHelper.FindProjectCollectionName(segment))
-                    .GetProjects(
-                        stateFilter: null,
-                        top: top,
-                        skip: skip,
-                        userState: null)
+                    .GetBuildsAsync(
+                        project: SegmentHelper.FindProjectName(segment),
+                        top: 25)
                     .Result
                     .Select(x => this.ConvertToChildDriveItem(segment, x))
                     .ToArray();
@@ -47,7 +40,7 @@
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment, Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.Builds.GetChildDriveItems(Segment, Segment)");
             if (childSegment.HasWildcard)
             {
                 return base.GetChildDriveItems(segment, childSegment);
@@ -61,14 +54,13 @@
                         segment
                         .GetProvider()
                         .PSVstsDriveInfo
-                        .GetHttpClient<ProjectHttpClient>(
+                        .GetHttpClient<BuildHttpClient>(
                             SegmentHelper.FindProjectCollectionName(segment))
-                        .GetProject(
-                            id: childSegment.Name,
-                            includeCapabilities: true,
-                            includeHistory: true,
-                            userState: null)
-                        .Result)
+                        .GetBuildsAsync(
+                            project: SegmentHelper.FindProjectName(segment),
+                            buildNumber: childSegment.Name)
+                        .Result
+                        .Single())
                 };
             });
         }

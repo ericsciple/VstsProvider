@@ -23,15 +23,14 @@
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
             segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.GetChildDriveItems(Segment)");
-            return this.Wrap(() =>
+            return this.Wrap((int? top, int? skip) =>
             {
-                // TODO: SUPPORT PAGING
                 return segment.GetProvider()
                     .PSVstsDriveInfo
                     .GetHttpClient<ProjectCollectionHttpClient>()
                     .GetProjectCollections(
-                        top: null,
-                        skip: null,
+                        top: top,
+                        skip: skip,
                         userState: null)
                     .Result
                     .Select(x => this.ConvertToChildDriveItem(segment, x))

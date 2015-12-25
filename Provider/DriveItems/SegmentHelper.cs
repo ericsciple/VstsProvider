@@ -2,8 +2,7 @@
 {
     using System;
     using ProjectCollections;
-    using ProjectCollections.TeamProjects.GitRepos;
-    using ProjectCollections.TeamProjects;
+    using ProjectCollections.Projects;
 
     public static class SegmentHelper
     {
@@ -12,19 +11,18 @@
             return Find(startingSegment, "collection name", typeof(ProjectCollectionTypeInfo));
         }
 
-        public static string FindRepoName(Segment startingSegment)
-        {
-            return Find(startingSegment, "repo name", typeof(Repo_1_0_TypeInfo));
-        }
-
-        public static string FindTeamProjectName(Segment startingSegment)
+        public static string FindProjectName(Segment startingSegment)
         {
             return Find(
                 startingSegment,
                 "team project name",
-                typeof(GitTeamProject_1_0_TypeInfo),
-                typeof(TeamProject_1_0_TypeInfo));
+                typeof(ProjectTypeInfo));
         }
+
+        //public static string FindRepoName(Segment startingSegment)
+        //{
+        //    return Find(startingSegment, "repo name", typeof(Repo_1_0_TypeInfo));
+        //}
 
         private static string Find(Segment startingSegment, string description, params Type[] types)
         {

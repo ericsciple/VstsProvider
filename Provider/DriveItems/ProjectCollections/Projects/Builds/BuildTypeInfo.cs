@@ -1,17 +1,17 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.TeamProjects.Builds
+﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects.Builds
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
 
-    public sealed class Build_2_0_TypeInfo : LeafTypeInfo
+    public sealed class BuildTypeInfo : LeafTypeInfo
     {
         public override string Name
         {
             get
             {
-                return "Build_2.0";
+                return "Build";
             }
         }
 
