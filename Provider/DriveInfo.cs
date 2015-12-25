@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Management.Automation;
     using System.Reflection;
     using System.Security;
@@ -10,7 +11,6 @@
     public sealed class DriveInfo : PSDriveInfo
     {
         private readonly DriveParameters driveParameters;
-        private readonly Dictionary<Type, object> httpClients = new Dictionary<Type, object>();
         private VssCredentials vssCredentials;
 
         public DriveInfo(PSDriveInfo driveInfo, DriveParameters driveParameters) : base(driveInfo)
@@ -58,18 +58,14 @@
             }
         }
 
-        public T GetHttpClient<T>() where T : class
+        public T GetHttpClient<T>(params string[] segments) where T : class
         {
-            object httpClient;
-            if (!this.httpClients.TryGetValue(typeof(T), out httpClient))
-            {
-                ConstructorInfo constructorInfo = typeof(T).GetConstructor(new[] { typeof(Uri), typeof(VssCredentials) });
-                httpClient = constructorInfo.Invoke(
-                    new object[] { new Uri(this.Root), this.VssCredentials });
-                this.httpClients[typeof(T)] = httpClient;
-            }
-
-            return httpClient as T;
+            string url = string.Join(
+                "/",
+                (new[] { (this.Root ?? string.Empty).TrimEnd('/') }).Concat(segments));
+            ConstructorInfo constructorInfo = typeof(T).GetConstructor(new[] { typeof(Uri), typeof(VssCredentials) });
+            return constructorInfo.Invoke(
+                new object[] { new Uri(url), this.VssCredentials }) as T;
         }
 
         public string GetPersonalAccessToken()

@@ -33,7 +33,8 @@
             {
                 return segment.GetProvider()
                     .PSVstsDriveInfo
-                    .GetHttpClient<ProjectHttpClient>()
+                    .GetHttpClient<ProjectHttpClient>(
+                        SegmentHelper.FindProjectCollectionName(segment))
                     .GetProjects(
                         stateFilter: null,
                         top: null,
@@ -60,7 +61,9 @@
                         segment,
                         segment
                         .GetProvider()
-                        .PSVstsDriveInfo.GetHttpClient<ProjectHttpClient>()
+                        .PSVstsDriveInfo
+                        .GetHttpClient<ProjectHttpClient>(
+                            SegmentHelper.FindProjectCollectionName(segment))
                         .GetProject(
                             id: childSegment.Name,
                             includeCapabilities: true,
