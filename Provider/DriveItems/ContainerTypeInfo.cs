@@ -21,9 +21,9 @@
         {
             return this.ChildTypeInfo
                 .Values
-                .Where(x => x is WellKnownNameContainerTypeInfo)
+                .Where(x => x is HttpClientContainerTypeInfo)
                 .OrderBy(x => x.Name)
-                .Select(x => x.ConvertToDriveItem(parentSegment: segment, obj: x.Name));
+                .Select(x => x.ConvertToDriveItem(parentSegment: segment, obj: null));
         }
 
         public virtual IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)

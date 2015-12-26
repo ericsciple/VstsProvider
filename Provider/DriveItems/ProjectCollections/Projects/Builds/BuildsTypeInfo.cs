@@ -4,8 +4,9 @@
     using System.Linq;
     using System.Management.Automation;
     using Microsoft.TeamFoundation.Build.WebApi;
+    using Microsoft.VisualStudio.Services.WebApi;
 
-    public sealed class BuildsTypeInfo : WellKnownNameContainerTypeInfo
+    public sealed class BuildsTypeInfo : HttpClientContainerTypeInfo
     {
         public BuildsTypeInfo()
         {
@@ -23,12 +24,10 @@
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
             segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.Builds.GetChildDriveItems(Segment)");
+            BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
             return this.Wrap(() =>
             {
-                return segment.GetProvider()
-                    .PSVstsDriveInfo
-                    .GetHttpClient<BuildHttpClient>(
-                        SegmentHelper.FindProjectCollectionName(segment))
+                return httpClient
                     .GetBuildsAsync(
                         project: SegmentHelper.FindProjectName(segment),
                         top: 25)
@@ -46,16 +45,13 @@
                 return base.GetChildDriveItems(segment, childSegment);
             }
 
+            BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
             return this.Wrap(() =>
             {
                 return new[] {
                     this.ConvertToChildDriveItem(
                         segment,
-                        segment
-                        .GetProvider()
-                        .PSVstsDriveInfo
-                        .GetHttpClient<BuildHttpClient>(
-                            SegmentHelper.FindProjectCollectionName(segment))
+                        httpClient
                         .GetBuildsAsync(
                             project: SegmentHelper.FindProjectName(segment),
                             buildNumber: childSegment.Name)
@@ -63,6 +59,16 @@
                         .Single())
                 };
             });
+        }
+
+        protected override VssHttpClientBase GetHttpClient(Segment parentSegment)
+        {
+            // TODO: Can the project name go here too?
+            return parentSegment
+                .GetProvider()
+                .PSVstsDriveInfo
+                .GetHttpClient<BuildHttpClient>(
+                    SegmentHelper.FindProjectCollectionName(parentSegment));
         }
     }
 }

@@ -10,7 +10,6 @@
         private RootTypeInfo()
         {
             this.AddChildTypeInfo(new ProjectCollectionsTypeInfo());
-            //this.AddChildTypeInfo(new ProjectCollections_1_0_preview_2_TypeInfo());
         }
 
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)

@@ -5,9 +5,10 @@
     using System.Management.Automation;
     using System.Reflection;
     using Microsoft.TeamFoundation.Core.WebApi;
+    using Microsoft.VisualStudio.Services.WebApi;
     using DriveItems = VstsProvider.DriveItems;
 
-    public class ProjectsTypeInfo : WellKnownNameContainerTypeInfo
+    public class ProjectsTypeInfo : HttpClientContainerTypeInfo
     {
         public ProjectsTypeInfo()
             : this(new ProjectTypeInfo())
@@ -27,31 +28,13 @@
             }
         }
 
-        public static ProjectHttpClient GetHttpClient(PSObject psObject)
-        {
-            return psObject
-                .GetPSVstsProvider()
-                .PSVstsDriveInfo
-                .GetHttpClient<ProjectHttpClient>(
-                    SegmentHelper.FindProjectCollectionName(psObject.GetPSVstsParentSegment()));
-        }
-
-        public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
-        {
-            PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.Methods.Add(new PSCodeMethod("GetHttpClient", this.GetType().GetMethod("GetHttpClient", BindingFlags.Public | BindingFlags.Static)));
-            return psObject;
-        }
-
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
             segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment)");
+            ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
             return this.Wrap((int? top, int? skip) =>
             {
-                return segment.GetProvider()
-                    .PSVstsDriveInfo
-                    .GetHttpClient<ProjectHttpClient>(
-                        SegmentHelper.FindProjectCollectionName(segment))
+                return httpClient
                     .GetProjects(
                         stateFilter: null,
                         top: top,
@@ -71,16 +54,13 @@
                 return base.GetChildDriveItems(segment, childSegment);
             }
 
+            ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
             return this.Wrap(() =>
             {
                 return new[] {
                     this.ConvertToChildDriveItem(
                         segment,
-                        segment
-                        .GetProvider()
-                        .PSVstsDriveInfo
-                        .GetHttpClient<ProjectHttpClient>(
-                            SegmentHelper.FindProjectCollectionName(segment))
+                        httpClient
                         .GetProject(
                             id: childSegment.Name,
                             includeCapabilities: true,
@@ -89,6 +69,15 @@
                         .Result)
                 };
             });
+        }
+
+        protected override VssHttpClientBase GetHttpClient(Segment parentSegment)
+        {
+            return parentSegment
+                .GetProvider()
+                .PSVstsDriveInfo
+                .GetHttpClient<ProjectHttpClient>(
+                    SegmentHelper.FindProjectCollectionName(parentSegment));
         }
     }
 }

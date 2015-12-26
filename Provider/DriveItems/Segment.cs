@@ -46,7 +46,7 @@
             // Determine the child segment's name and new remaining names.
             string childName;
             Dictionary<string, TypeInfo> childTypeInfos = (this.ItemTypeInfo as ContainerTypeInfo).ChildTypeInfo;
-            if (this.ItemTypeInfo is WellKnownNameContainerTypeInfo
+            if (this.ItemTypeInfo is HttpClientContainerTypeInfo
                 && childTypeInfos.Count == 1
                 && childTypeInfos.Values.Single() is LeafTypeInfo)
             {
@@ -76,12 +76,12 @@
                 childTypeInfo = null;
             }
             else if (childTypeInfos.ContainsKey(childName)
-                    && childTypeInfos[childName] is WellKnownNameContainerTypeInfo)
+                    && childTypeInfos[childName] is HttpClientContainerTypeInfo)
             {
                 childTypeInfo = childTypeInfos[childName];
             }
             else if (childTypeInfos.Count == 1
-                    && !(childTypeInfos.Values.Single() is WellKnownNameContainerTypeInfo))
+                    && !(childTypeInfos.Values.Single() is HttpClientContainerTypeInfo))
             {
                 childTypeInfo = childTypeInfos.Values.Single();
             }

@@ -7,12 +7,13 @@
     using System.Management.Automation;
     using System.Text;
     using System.Management.Automation.Runspaces;
+    using Microsoft.VisualStudio.Services.WebApi;
 
-    public abstract class WellKnownNameContainerTypeInfo : ContainerTypeInfo
+    public abstract class HttpClientContainerTypeInfo : ContainerTypeInfo
     {
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
-            PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
+            PSObject psObject = base.ConvertToDriveItem(parentSegment, this.GetHttpClient(parentSegment));
             psObject.AddPSVstsName(this.Name);
             return psObject;
         }
@@ -21,6 +22,8 @@
         {
             return this.ChildTypeInfo.Values.Single().ConvertToDriveItem(parentSegment, obj);
         }
+
+        protected abstract VssHttpClientBase GetHttpClient(Segment parentSegment) ;
 
         // TODO: PASS FLAG INDICATING: SINGLE_ITEM, FIRST_PAGE, ALL_PAGES. DEFINE ABSTRACT PROPERTIES INDICATING WHETHER PAGING IS BY CONTINUATION TOKEN OR $TOP/$SKIP AND THE PAGE SIZE.
         protected IEnumerable<PSObject> InvokeGetWebRequest(Segment parentSegment, string relativeUrlFormat, params object[] unencodedArgs)

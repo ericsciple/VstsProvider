@@ -5,8 +5,9 @@
     using System.Management.Automation;
     using System.Reflection;
     using Microsoft.TeamFoundation.Core.WebApi;
+    using Microsoft.VisualStudio.Services.WebApi;
 
-    public sealed class ProjectCollectionsTypeInfo : WellKnownNameContainerTypeInfo
+    public sealed class ProjectCollectionsTypeInfo : HttpClientContainerTypeInfo
     {
         public ProjectCollectionsTypeInfo()
         {
@@ -21,29 +22,13 @@
             }
         }
 
-        public static ProjectCollectionHttpClient GetHttpClient(PSObject psObject)
-        {
-            return psObject
-                .GetPSVstsProvider()
-                .PSVstsDriveInfo
-                .GetHttpClient<ProjectCollectionHttpClient>();
-        }
-
-        public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
-        {
-            PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.Methods.Add(new PSCodeMethod("GetHttpClient", this.GetType().GetMethod("GetHttpClient", BindingFlags.Public | BindingFlags.Static)));
-            return psObject;
-        }
-
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
             segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.GetChildDriveItems(Segment)");
+            ProjectCollectionHttpClient httpClient = this.GetHttpClient(segment) as ProjectCollectionHttpClient;
             return this.Wrap((int? top, int? skip) =>
             {
-                return segment.GetProvider()
-                    .PSVstsDriveInfo
-                    .GetHttpClient<ProjectCollectionHttpClient>()
+                return httpClient
                     .GetProjectCollections(
                         top: top,
                         skip: skip,
@@ -62,22 +47,27 @@
                 return base.GetChildDriveItems(segment, childSegment);
             }
 
+            ProjectCollectionHttpClient httpClient = this.GetHttpClient(segment) as ProjectCollectionHttpClient;
             return this.Wrap(() =>
             {
                 return new[] {
-                    // TODO: UNRAVEL AGGREGATE EXCEPTION IF ONLY ONE INNER EXCEPTION.
                     this.ConvertToChildDriveItem(
                         segment,
-                        segment
-                        .GetProvider()
-                        .PSVstsDriveInfo
-                        .GetHttpClient<ProjectCollectionHttpClient>()
+                        httpClient
                         .GetProjectCollection(
                             id: childSegment.Name,
                             userState: null)
                         .Result)
                 };
             });
+        }
+
+        protected override VssHttpClientBase GetHttpClient(Segment parentSegment)
+        {
+            return parentSegment
+                .GetProvider()
+                .PSVstsDriveInfo
+                .GetHttpClient<ProjectCollectionHttpClient>();
         }
     }
 }
