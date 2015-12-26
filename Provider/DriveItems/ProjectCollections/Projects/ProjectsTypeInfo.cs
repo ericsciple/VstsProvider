@@ -3,7 +3,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
+    using System.Reflection;
     using Microsoft.TeamFoundation.Core.WebApi;
+    using DriveItems = VstsProvider.DriveItems;
 
     public class ProjectsTypeInfo : WellKnownNameContainerTypeInfo
     {
@@ -12,7 +14,7 @@
         {
         }
 
-        public ProjectsTypeInfo(TypeInfo childTypeInfo)
+        public ProjectsTypeInfo(DriveItems::TypeInfo childTypeInfo)
         {
             this.AddChildTypeInfo(childTypeInfo);
         }
@@ -23,6 +25,22 @@
             {
                 return "Projects";
             }
+        }
+
+        public static ProjectHttpClient GetHttpClient(PSObject psObject)
+        {
+            return psObject
+                .GetPSVstsProvider()
+                .PSVstsDriveInfo
+                .GetHttpClient<ProjectHttpClient>(
+                    SegmentHelper.FindProjectCollectionName(psObject.GetPSVstsParentSegment()));
+        }
+
+        public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
+        {
+            PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
+            psObject.Methods.Add(new PSCodeMethod("GetHttpClient", this.GetType().GetMethod("GetHttpClient", BindingFlags.Public | BindingFlags.Static)));
+            return psObject;
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
