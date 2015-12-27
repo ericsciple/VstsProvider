@@ -6,6 +6,7 @@
     using System.Management.Automation;
     using System.Reflection;
     using System.Security;
+    using System.Text;
     using Microsoft.VisualStudio.Services.Common;
 
     public sealed class DriveInfo : PSDriveInfo
@@ -60,12 +61,18 @@
 
         public T GetHttpClient<T>(params string[] segments) where T : class
         {
-            string url = string.Join(
-                "/",
-                (new[] { (this.Root ?? string.Empty).TrimEnd('/') }).Concat(segments));
-            ConstructorInfo constructorInfo = typeof(T).GetConstructor(new[] { typeof(Uri), typeof(VssCredentials) });
+            StringBuilder url = new StringBuilder();
+            url.Append((this.Root ?? string.Empty).TrimEnd('/'));
+            foreach (string segment in segments)
+            {
+                url.Append('/');
+                url.Append(Uri.EscapeDataString(segment));
+            }
+
+            ConstructorInfo constructorInfo = typeof(T).GetConstructor(
+                new[] { typeof(Uri), typeof(VssCredentials) });
             return constructorInfo.Invoke(
-                new object[] { new Uri(url), this.VssCredentials }) as T;
+                new object[] { new Uri(url.ToString()), this.VssCredentials }) as T;
         }
 
         public string GetPersonalAccessToken()
