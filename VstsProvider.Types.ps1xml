@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Types>
   <Type>
+    <Name>Microsoft.TeamFoundation.Build.WebApi.Build</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <NoteProperty>
+            <Name>DefaultDisplayProperty</Name>
+            <Value>PSVstsName</Value>
+          </NoteProperty>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>PSVstsName</Name>
+              <Name>BuildNumber</Name>
+            </ReferencedProperties>
+          </PropertySet>
+          <PropertySet>
+            <Name>DefaultKeyPropertySet</Name>
+            <ReferencedProperties>
+              <Name>PSVstsName</Name>
+              <Name>BuildNumber</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+    </Members>
+  </Type>
+  <Type>
+    <Name>Microsoft.TeamFoundation.Build.WebApi.BuildDefinition</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <NoteProperty>
+            <Name>DefaultDisplayProperty</Name>
+            <Value>Name</Value>
+          </NoteProperty>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>Name</Name>
+            </ReferencedProperties>
+          </PropertySet>
+          <PropertySet>
+            <Name>DefaultKeyPropertySet</Name>
+            <ReferencedProperties>
+              <Name>Name</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+    </Members>
+  </Type>
+  <Type>
     <Name>Microsoft.VisualStudio.Services.WebApi.VssHttpClientBase</Name>
     <!--<Name>Microsoft.TeamFoundation.Core.WebApi.ProjectCollectionHttpClient</Name>-->
     <Members>

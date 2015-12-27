@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
+    using Microsoft.TeamFoundation.Build.WebApi;
 
     public sealed class BuildTypeInfo : LeafTypeInfo
     {
@@ -17,17 +18,17 @@
 
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
-            PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            PSPropertyInfo buildNumberPropertyInfo = psObject.Properties["name"];
+            Build build = obj as Build;
+            PSObject psObject = base.ConvertToDriveItem(parentSegment, build);
             string name;
-            if (buildNumberPropertyInfo == null)
+            if (string.IsNullOrEmpty(build.BuildNumber))
             {
                 name = Guid.NewGuid().ToString();
                 parentSegment.GetProvider().WriteWarning(string.Format("Unknown build number. Setting PSVstsName: {0}", name));
             }
             else
             {
-                name = psObject.Properties["buildNumber"].Value as string;
+                name = build.BuildNumber;
             }
 
             psObject.AddPSVstsName(name);

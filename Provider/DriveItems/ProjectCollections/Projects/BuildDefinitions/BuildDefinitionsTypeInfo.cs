@@ -30,8 +30,8 @@
                 () =>
                 {
                     return httpClient
-                        .GetDefinitionsAsync()
-                            //project: SegmentHelper.FindProjectName(segment))
+                        .GetDefinitionsAsync(
+                            project: SegmentHelper.FindProjectName(segment))
                         .Result
                         .Select(x => this.ConvertToChildDriveItem(segment, x))
                         .ToArray();
