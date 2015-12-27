@@ -12,14 +12,14 @@
         public Segment(Provider provider, Path path, TypeInfo typeInfo, string name, string remainingNames, Segment parent)
         {
             this.provider = provider;
-            this.provider.WriteVerbose("DriveItems.Segment.ctor(...)");
+            this.provider.WriteDebug("DriveItems.Segment.ctor(...)");
             this.path = path;
             this.ItemTypeInfo = typeInfo;
             this.Name = name;
             this.parent = parent;
-            this.provider.WriteVerbose(string.Format("this.Name={0}", this.Name));
-            this.provider.WriteVerbose(string.Format("this.Parent.Name={0}", this.GetParent() == null ? string.Empty : this.GetParent().Name));
-            this.provider.WriteVerbose(string.Format("remainingNames={0}", remainingNames));
+            this.provider.WriteDebug(string.Format("this.Name={0}", this.Name));
+            this.provider.WriteDebug(string.Format("this.Parent.Name={0}", this.GetParent() == null ? string.Empty : this.GetParent().Name));
+            this.provider.WriteDebug(string.Format("remainingNames={0}", remainingNames));
             if (string.IsNullOrEmpty(remainingNames))
             {
                 return;
@@ -70,7 +70,7 @@
 
             // Determine the child segment's type info.
             TypeInfo childTypeInfo;
-            this.provider.WriteVerbose(string.Format("Determining type info for child segment: {0}", childName));
+            this.provider.WriteDebug(string.Format("Determining type info for child segment: {0}", childName));
             if (CheckHasWildcard(childName))
             {
                 childTypeInfo = null;

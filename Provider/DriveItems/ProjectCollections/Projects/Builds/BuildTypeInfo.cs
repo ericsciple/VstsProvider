@@ -18,7 +18,7 @@
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            PSPropertyInfo buildNumberPropertyInfo = psObject.Properties["buildNumber"];
+            PSPropertyInfo buildNumberPropertyInfo = psObject.Properties["name"];
             string name;
             if (buildNumberPropertyInfo == null)
             {

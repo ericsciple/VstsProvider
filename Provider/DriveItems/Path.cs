@@ -15,9 +15,9 @@
             // Store the parameters.
             this.provider = provider;
             this.RawPath = rawPath;
-            this.provider.WriteVerbose("DriveItems.Path.ctor(...)");
-            this.provider.WriteVerbose("this.rawPath = {0}", this.RawPath);
-            this.provider.WriteVerbose("this.provider.DriveInfo.Root = {0}", this.provider.PSVstsDriveInfo.Root);
+            this.provider.WriteDebug("DriveItems.Path.ctor(...)");
+            this.provider.WriteDebug("this.rawPath = {0}", this.RawPath);
+            this.provider.WriteDebug("this.provider.DriveInfo.Root = {0}", this.provider.PSVstsDriveInfo.Root);
 
             string rootSegmentName;
             string remainingSegmentNames;
@@ -70,20 +70,20 @@
 
         public static string GetChildName(Provider provider, string rawPath)
         {
-            provider.WriteVerbose("VstsProvider.DriveItems.Path::GetChildName(...)");
+            provider.WriteDebug("VstsProvider.DriveItems.Path::GetChildName(...)");
             return new Path(provider: provider, rawPath: rawPath).Segments.Last().Name;
         }
 
         public IEnumerable<PSObject> GetChildDriveItems()
         {
-            this.provider.WriteVerbose("DriveItems.Path.GetChildDriveItems()");
+            this.provider.WriteDebug("DriveItems.Path.GetChildDriveItems()");
             Segment lastSegment = this.Segments.Last();
             Segment lastParentSegment = lastSegment.GetParent();
 
             // Handle wildcard segment.
             if (lastSegment.HasWildcard)
             {
-                this.provider.WriteVerbose("lastSegment.HasWildcard");
+                this.provider.WriteDebug("lastSegment.HasWildcard");
                 return (lastParentSegment.ItemTypeInfo as ContainerTypeInfo).GetChildDriveItems(
                     segment: lastParentSegment,
                     childSegment: lastSegment);
@@ -112,7 +112,7 @@
 
         public IEnumerable<PSObject> GetDriveItem()
         {
-            this.provider.WriteVerbose("VstsProvider.DriveItems.Path.GetDriveItem()");
+            this.provider.WriteDebug("VstsProvider.DriveItems.Path.GetDriveItem()");
             Segment lastSegment = this.Segments.Last();
             Segment lastParentSegment = lastSegment.GetParent();
             if (lastParentSegment == null)
@@ -175,10 +175,10 @@
 
         private static bool GetIsRooted(Provider provider, string rawPath)
         {
-            provider.WriteVerbose("VstsProvider.DriveItems.Path::GetIsRooted(...)");
-            provider.WriteVerbose(string.Format("rawPath = {0}", rawPath));
+            provider.WriteDebug("VstsProvider.DriveItems.Path::GetIsRooted(...)");
+            provider.WriteDebug(string.Format("rawPath = {0}", rawPath));
             string normalizedRoot = provider.PSVstsDriveInfo.Root.Replace('/', '\\').TrimEnd('\\');
-            provider.WriteVerbose(string.Format("normalizedRoot = {0}", normalizedRoot));
+            provider.WriteDebug(string.Format("normalizedRoot = {0}", normalizedRoot));
             return (rawPath ?? string.Empty).StartsWith(normalizedRoot, StringComparison.OrdinalIgnoreCase);
         }
     }

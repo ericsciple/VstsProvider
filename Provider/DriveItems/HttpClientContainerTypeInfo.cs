@@ -94,7 +94,7 @@ ConvertFrom-Json $response.Content |
             } while (!string.IsNullOrEmpty(continuationToken));
         }
 
-        protected T Wrap<T>(Func<T> func)
+        protected T Wrap<T>(Segment segment, Func<T> func)
         {
             try
             {
@@ -104,14 +104,16 @@ ConvertFrom-Json $response.Content |
             {
                 if (ex.InnerExceptions.Count == 1)
                 {
+                    segment.GetProvider().WriteVerbose(ex.InnerExceptions[0].ToString());
                     throw ex.InnerExceptions[0];
                 }
 
+                segment.GetProvider().WriteVerbose(ex.ToString());
                 throw;
             }
         }
 
-        protected IEnumerable<T> Wrap<T>(Func<int?, int?, IEnumerable<T>> func)
+        protected IEnumerable<T> Wrap<T>(Segment segment, Func<int?, int?, IEnumerable<T>> func)
         {
             int count = 0;
             int? top = null;
@@ -128,9 +130,11 @@ ConvertFrom-Json $response.Content |
                 {
                     if (ex.InnerExceptions.Count == 1)
                     {
+                        segment.GetProvider().WriteVerbose(ex.InnerExceptions[0].ToString());
                         throw ex.InnerExceptions[0];
                     }
 
+                    segment.GetProvider().WriteVerbose(ex.ToString());
                     throw;
                 }
 

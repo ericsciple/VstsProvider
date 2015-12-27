@@ -18,6 +18,15 @@ namespace VstsProvider
             }
         }
 
+        public void WriteDebug(string format, params object[] args)
+        {
+            string message =
+                args.Length == 0
+                ? format
+                : string.Format(CultureInfo.InvariantCulture, format, args);
+            base.WriteDebug(message);
+        }
+
         public void WriteVerbose(string format, params object[] args)
         {
             string message =
@@ -29,7 +38,7 @@ namespace VstsProvider
 
         protected override string[] ExpandPath(string rawPath)
         {
-            this.WriteVerbose("VstsProvider.Provider.ExpandPath(...)");
+            this.WriteDebug("VstsProvider.Provider.ExpandPath(...)");
             Path path = this.ParsePath(rawPath);
             Segment lastSegment = path.Segments.Last();
             Segment lastParentSegment = lastSegment.GetParent();
@@ -51,7 +60,7 @@ namespace VstsProvider
 
         protected override void GetChildItems(string rawPath, bool recurse)
         {
-            this.WriteVerbose("VstsProvider.Provider.GetChildItems(...)");
+            this.WriteDebug("VstsProvider.Provider.GetChildItems(...)");
             Path path = this.ParsePath(rawPath);
             Segment lastSegment = path.Segments.Last();
             Segment lastContainerSegment =
@@ -81,7 +90,7 @@ namespace VstsProvider
 
         protected override string GetChildName(string rawPath)
         {
-            this.WriteVerbose("VstsProvider.Provider.GetChildName(string)");
+            this.WriteDebug("VstsProvider.Provider.GetChildName(string)");
             try
             {
                 return Path.GetChildName(provider: this, rawPath: rawPath);
@@ -96,7 +105,7 @@ namespace VstsProvider
 
         protected override void GetItem(string rawPath)
         {
-            this.WriteVerbose("VstsProvider.Provider.GetItem(...)");
+            this.WriteDebug("VstsProvider.Provider.GetItem(...)");
             Path path = this.ParsePath(rawPath);
             foreach (PSObject psObject in path.GetDriveItem())
             {
@@ -126,7 +135,7 @@ namespace VstsProvider
 
         protected override string GetParentPath(string rawPath, string root)
         {
-            this.WriteVerbose("VstsProvider.Provider.GetParentPath(...)");
+            this.WriteDebug("VstsProvider.Provider.GetParentPath(...)");
             Path path = this.ParsePath(rawPath);
             Segment lastSegment = path.Segments.Last();
             Segment lastParentSegment = lastSegment.GetParent();
@@ -143,7 +152,7 @@ namespace VstsProvider
 
         protected override bool IsItemContainer(string rawPath)
         {
-            this.WriteVerbose("VstsProvider.Provider.IsItemContainer(...)");
+            this.WriteDebug("VstsProvider.Provider.IsItemContainer(...)");
             try
             {
                 Path path = this.ParsePath(rawPath);
@@ -162,7 +171,7 @@ namespace VstsProvider
 
         protected override bool IsValidPath(string rawPath)
         {
-            this.WriteVerbose("VstsProvider.Provider.IsValidPath(...)");
+            this.WriteDebug("VstsProvider.Provider.IsValidPath(...)");
             try
             {
                 this.ParsePath(rawPath);
@@ -176,7 +185,7 @@ namespace VstsProvider
 
         protected override bool ItemExists(string rawPath)
         {
-            this.WriteVerbose("VstsProvider.Provider.ItemExists(...)");
+            this.WriteDebug("VstsProvider.Provider.ItemExists(...)");
             try
             {
                 Path path = this.ParsePath(rawPath);
@@ -194,26 +203,26 @@ namespace VstsProvider
 
         protected override PSDriveInfo NewDrive(PSDriveInfo driveInfo)
         {
-            this.WriteVerbose("VstsProvider.Provider.NewDrive(...)");
+            this.WriteDebug("VstsProvider.Provider.NewDrive(...)");
             return new DriveInfo(driveInfo, this.DynamicParameters as DriveParameters);
         }
 
         protected override object NewDriveDynamicParameters()
         {
-            this.WriteVerbose("VstsProvider.Provider.NewDriveDynamicParameters()");
+            this.WriteDebug("VstsProvider.Provider.NewDriveDynamicParameters()");
             return new DriveParameters();
         }
 
         protected override void NewItem(string rawPath, string itemTypeName, object newItemValue)
         {
-            this.WriteVerbose("VstsProvider.Provider.NewItem(...)");
+            this.WriteDebug("VstsProvider.Provider.NewItem(...)");
             Path path = this.ParsePath(rawPath);
             path.NewItem(this.DynamicParameters);
         }
 
         protected override object NewItemDynamicParameters(string rawPath, string itemTypeName, object newItemValue)
         {
-            this.WriteVerbose("VstsProvider.Provider.NewItemDynamicParameters(...)");
+            this.WriteDebug("VstsProvider.Provider.NewItemDynamicParameters(...)");
             Path path = this.ParsePath(rawPath);
             return path.NewItemDynamicParameters();
         }

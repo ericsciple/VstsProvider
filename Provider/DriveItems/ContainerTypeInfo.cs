@@ -32,7 +32,7 @@
             if (childSegment.HasWildcard)
             {
                 WildcardPattern pattern;
-                segment.GetProvider().WriteVerbose("childSegment.HasWildcard");
+                segment.GetProvider().WriteDebug("childSegment.HasWildcard");
                 pattern = new WildcardPattern(
                     pattern: childSegment.Name,
                     options: WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase);

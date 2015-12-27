@@ -25,16 +25,18 @@
         {
             segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.Builds.GetChildDriveItems(Segment)");
             BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
-            return this.Wrap(() =>
-            {
-                return httpClient
-                    .GetBuildsAsync(
-                        project: SegmentHelper.FindProjectName(segment),
-                        top: 25)
-                    .Result
-                    .Select(x => this.ConvertToChildDriveItem(segment, x))
-                    .ToArray();
-            });
+            return this.Wrap(
+                segment,
+                () =>
+                {
+                    return httpClient
+                        .GetBuildsAsync(
+                            project: SegmentHelper.FindProjectName(segment),
+                            top: 25)
+                        .Result
+                        .Select(x => this.ConvertToChildDriveItem(segment, x))
+                        .ToArray();
+                });
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
@@ -46,24 +48,25 @@
             }
 
             BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
-            return this.Wrap(() =>
-            {
-                return new[] {
-                    this.ConvertToChildDriveItem(
-                        segment,
-                        httpClient
-                        .GetBuildsAsync(
-                            project: SegmentHelper.FindProjectName(segment),
-                            buildNumber: childSegment.Name)
-                        .Result
-                        .Single())
-                };
-            });
+            return this.Wrap(
+                segment,
+                () =>
+                {
+                    return new[] {
+                        this.ConvertToChildDriveItem(
+                            segment,
+                            httpClient
+                            .GetBuildsAsync(
+                                project: SegmentHelper.FindProjectName(segment),
+                                buildNumber: childSegment.Name)
+                            .Result
+                            .Single())
+                    };
+                });
         }
 
         protected override VssHttpClientBase GetHttpClient(Segment parentSegment)
         {
-            // TODO: Can the project name go here too?
             return parentSegment
                 .GetProvider()
                 .PSVstsDriveInfo

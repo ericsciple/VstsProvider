@@ -32,18 +32,20 @@
         {
             segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment)");
             ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
-            return this.Wrap((int? top, int? skip) =>
-            {
-                return httpClient
-                    .GetProjects(
-                        stateFilter: null,
-                        top: top,
-                        skip: skip,
-                        userState: null)
-                    .Result
-                    .Select(x => this.ConvertToChildDriveItem(segment, x))
-                    .ToArray();
-            });
+            return this.Wrap(
+                segment,
+                (int? top, int? skip) =>
+                {
+                    return httpClient
+                        .GetProjects(
+                            stateFilter: null,
+                            top: top,
+                            skip: skip,
+                            userState: null)
+                        .Result
+                        .Select(x => this.ConvertToChildDriveItem(segment, x))
+                        .ToArray();
+                });
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
@@ -55,20 +57,22 @@
             }
 
             ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
-            return this.Wrap(() =>
-            {
-                return new[] {
-                    this.ConvertToChildDriveItem(
-                        segment,
-                        httpClient
-                        .GetProject(
-                            id: childSegment.Name,
-                            includeCapabilities: true,
-                            includeHistory: true,
-                            userState: null)
-                        .Result)
-                };
-            });
+            return this.Wrap(
+                segment,
+                () =>
+                {
+                    return new[] {
+                        this.ConvertToChildDriveItem(
+                            segment,
+                            httpClient
+                            .GetProject(
+                                id: childSegment.Name,
+                                includeCapabilities: true,
+                                includeHistory: true,
+                                userState: null)
+                            .Result)
+                    };
+                });
         }
 
         protected override VssHttpClientBase GetHttpClient(Segment parentSegment)
