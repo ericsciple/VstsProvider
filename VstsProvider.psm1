@@ -28,21 +28,24 @@ Write-Progress -Activity 'Restoring NuGet packages.' -Completed
 Write-Progress -Activity 'Compiling provider.' -PercentComplete 0
 Write-Verbose 'Compiling provider.'
 [string[]]$sourceFiles =
-    Get-ChildItem -Recurse -Path $PSScriptRoot\Provider\*.cs |
+    Get-ChildItem -Recurse -Path $PSScriptRoot\Provider -Filter *.cs |
     Select-Object -ExpandProperty FullName
 $compilerParameters = New-Object -TypeName System.CodeDom.Compiler.CompilerParameters
 $compilerParameters.CompilerOptions = '/unsafe'
 $compilerParameters.ReferencedAssemblies.Add('System.dll')
 $compilerParameters.ReferencedAssemblies.Add('System.Core.dll')
 $compilerParameters.ReferencedAssemblies.Add("$PSScriptRoot\Provider\packages\Microsoft.PowerShell.3.ReferenceAssemblies.1.0.0\lib\net4\System.Management.Automation.dll")
-foreach ($dll in Get-ChildItem -LiteralPath @( "$PSScriptRoot\Provider\packages\Newtonsoft.Json.6.0.5\lib\net45", "$PSScriptRoot\Provider\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45", "$PSScriptRoot\Provider\packages\Microsoft.VisualStudio.Services.Client.14.89.0\lib\net45", "$PSScriptRoot\Provider\packages\Microsoft.TeamFoundationServer.Client.14.89.0\lib\net45" ) -Filter "*.dll") {
+foreach ($dll in Get-ChildItem -Filter "*.dll" -LiteralPath @(
+        "$PSScriptRoot\Provider\packages\Newtonsoft.Json.6.0.5\lib\net45"
+        "$PSScriptRoot\Provider\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45"
+        "$PSScriptRoot\Provider\packages\Microsoft.VisualStudio.Services.Client.14.89.0\lib\net45"
+        "$PSScriptRoot\Provider\packages\Microsoft.TeamFoundationServer.Client.14.89.0\lib\net45"
+    ))
+{
     $compilerParameters.ReferencedAssemblies.Add($dll.FullName)
     Add-Type -LiteralPath $dll.FullName
 }
-# $compilerParameters.ReferencedAssemblies.Add("$PSScriptRoot\Provider\packages\Microsoft.TeamFoundationServer.Client.14.89.0\lib\net45\Microsoft.TeamFoundation.Core.WebApi.dll")
-# $compilerParameters.ReferencedAssemblies.Add("$PSScriptRoot\Provider\packages\Microsoft.VisualStudio.Services.Client.14.89.0\lib\net45\Microsoft.TeamFoundation.Common.dll")
-# $compilerParameters.ReferencedAssemblies.Add("$PSScriptRoot\Provider\packages\Microsoft.VisualStudio.Services.Client.14.89.0\lib\net45\Microsoft.VisualStudio.Services.Common.dll")
-# $compilerParameters.ReferencedAssemblies.Add("$PSScriptRoot\Provider\packages\Microsoft.VisualStudio.Services.Client.14.89.0\lib\net45\Microsoft.VisualStudio.Services.WebApi.dll")
+
 Add-Type -LiteralPath $sourceFiles -CompilerParameters $compilerParameters
 Write-Progress -Activity 'Compiling provider.' -Completed
 
