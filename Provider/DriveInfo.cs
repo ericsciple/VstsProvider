@@ -52,7 +52,9 @@
             {
                 if (this.UsePersonalAccessToken)
                 {
-                    throw new NotImplementedException();
+                    return new VssBasicCredential(
+                        userName: string.Empty,
+                        password: SecureStringHelper.ConvertToString(this.PersonalAccessToken));
                 }
 
                 return new VssCredentials();
