@@ -50,9 +50,13 @@ Write-Progress -Activity 'Compiling provider.' -Completed
 Import-Module -Assembly ([VstsProvider.Provider].Assembly)
 
 # Export public functions.
+. "$PSScriptRoot\PublicFunctions\ConvertFrom-EscapedSegment"
+. "$PSScriptRoot\PublicFunctions\ConvertTo-EscapedSegment"
 . "$PSScriptRoot\PublicFunctions\Get-BuildDefinition"
 . "$PSScriptRoot\PublicFunctions\Export-BuildDefinition"
 . "$PSScriptRoot\PublicFunctions\New-PSDrive"
+Export-ModuleMember -Function ConvertFrom-EscapedSegment
+Export-ModuleMember -Function ConvertTo-EscapedSegment
 Export-ModuleMember -Function Get-BuildDefinition
 Export-ModuleMember -Function Export-BuildDefinition
 Export-ModuleMember -Function New-PSDrive
