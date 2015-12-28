@@ -2,6 +2,7 @@
 {
     using System;
     using VstsProvider.DriveItems.Projects;
+    using VstsProvider.DriveItems.Projects.Git;
 
     public static class SegmentHelper
     {
@@ -12,16 +13,13 @@
 
         public static string FindProjectName(Segment startingSegment)
         {
-            return Find(
-                startingSegment,
-                "team project name",
-                typeof(ProjectTypeInfo));
+            return Find(startingSegment, "team project name", typeof(ProjectTypeInfo));
         }
 
-        //public static string FindRepoName(Segment startingSegment)
-        //{
-        //    return Find(startingSegment, "repo name", typeof(Repo_1_0_TypeInfo));
-        //}
+        public static string FindRepoName(Segment startingSegment)
+        {
+            return Find(startingSegment, "repo name", typeof(RepoTypeInfo));
+        }
 
         private static string Find(Segment startingSegment, string description, params Type[] types)
         {

@@ -5,8 +5,16 @@
     using System.Linq;
     using System.Management.Automation;
 
-    public sealed class RepoTypeInfo : LeafTypeInfo
+    public sealed class RepoTypeInfo : ContainerTypeInfo
     {
+        public RepoTypeInfo()
+        {
+            //this.AddChildTypeInfo(new BuildQueues_2_0_TypeInfo());
+            //this.AddChildTypeInfo(new GitTeamProjects_1_0_TypeInfo());
+            //this.AddChildTypeInfo(new Processes_1_0_TypeInfo());
+            this.AddChildTypeInfo(new RefsTypeInfo());
+        }
+
         public override string Name
         {
             get

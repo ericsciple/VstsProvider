@@ -107,6 +107,34 @@
     </Members>
   </Type>
   <Type>
+    <Name>Microsoft.TeamFoundation.SourceControl.WebApi.GitRef</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <NoteProperty>
+            <Name>DefaultDisplayProperty</Name>
+            <Value>Name</Value>
+          </NoteProperty>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>PSVstsName</Name>
+              <Name>Name</Name>
+            </ReferencedProperties>
+          </PropertySet>
+          <PropertySet>
+            <Name>DefaultKeyPropertySet</Name>
+            <ReferencedProperties>
+              <Name>PSVstsName</Name>
+              <Name>Name</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+    </Members>
+  </Type>
+  <Type>
     <Name>Microsoft.TeamFoundation.SourceControl.WebApi.GitRepository</Name>
     <Members>
       <MemberSet>
