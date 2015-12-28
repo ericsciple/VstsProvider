@@ -7,34 +7,38 @@
     using Microsoft.TeamFoundation.SourceControl.WebApi;
     using Microsoft.VisualStudio.Services.WebApi;
 
-    public sealed class RefsTypeInfo : GitHttpClientContainerTypeInfo
+    public sealed class ItemsTypeInfo : GitHttpClientContainerTypeInfo
     {
-        public RefsTypeInfo()
+        public ItemsTypeInfo()
         {
-            this.AddChildTypeInfo(new RefTypeInfo());
+            this.AddChildTypeInfo(new ItemTypeInfo());
         }
 
         public override string Name
         {
             get
             {
-                return "Refs";
+                return "Items";
             }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Items.GetChildDriveItems(Segment)");
             GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
                 () =>
                 {
+                    GitVersionDescriptor versionDescriptor = new GitVersionDescriptor();
+                    versionDescriptor.Version = SegmentHelper.FindBranchName(segment);
+                    versionDescriptor.VersionType = GitVersionType.Branch;
                     return httpClient
-                        .GetRefsAsync(
+                        .GetItemsAsync(
                             project: SegmentHelper.FindProjectName(segment),
                             repositoryId: SegmentHelper.FindRepoName(segment),
-                            includeLinks: true)
+                            recursionLevel: VersionControlRecursionType.Full,
+                            versionDescriptor: versionDescriptor)
                         .Result
                         .Select(x => this.ConvertToChildDriveItem(segment, x))
                         .ToArray();
@@ -54,19 +58,19 @@
                 segment,
                 () =>
                 {
-                    string filter = Uri.UnescapeDataString(childSegment.Name);
-                    string fullName = string.Format("refs/{0}", filter);
+                    GitVersionDescriptor versionDescriptor = new GitVersionDescriptor();
+                    versionDescriptor.Version = SegmentHelper.FindBranchName(segment);
+                    versionDescriptor.VersionType = GitVersionType.Branch;
                     return new[] {
                         this.ConvertToChildDriveItem(
                             segment,
                             httpClient
-                            .GetRefsAsync(
+                            .GetItemAsync(
                                 project: SegmentHelper.FindProjectName(segment),
                                 repositoryId: SegmentHelper.FindRepoName(segment),
-                                filter: filter,
-                                includeLinks: true)
-                            .Result
-                            .Single(x => string.Equals(x.Name, fullName, StringComparison.OrdinalIgnoreCase)))
+                                path: Uri.UnescapeDataString(childSegment.Name),
+                                versionDescriptor: versionDescriptor)
+                            .Result)
                     };
                 });
         }

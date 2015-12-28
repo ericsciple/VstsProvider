@@ -6,6 +6,17 @@
 
     public static class SegmentHelper
     {
+        public static string FindBranchName(Segment startingSegment)
+        {
+            string refName = Uri.UnescapeDataString(Find(startingSegment, "ref name", typeof(RefTypeInfo)));
+            if (!refName.StartsWith("heads/"))
+            {
+                throw new Exception(string.Format("Unexpected branch name format: {0}. Expected format: heads/[...]", refName));
+            }
+
+            return refName.Substring("heads/".Length);
+        }
+
         public static string FindProjectCollectionName(Segment startingSegment)
         {
             return Find(startingSegment, "collection name", typeof(ProjectCollectionTypeInfo));
