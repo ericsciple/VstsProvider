@@ -1,9 +1,8 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects
+﻿namespace VstsProvider.DriveItems.Projects
 {
     using System.Management.Automation;
-    using VstsProvider.DriveItems.ProjectCollections.Projects.BuildDefinitions;
-    using VstsProvider.DriveItems.ProjectCollections.Projects.Builds;
-    using VstsProvider.DriveItems.ProjectCollections.Projects.GitRepos;
+    using VstsProvider.DriveItems.Projects.Build;
+    using VstsProvider.DriveItems.Projects.Git;
 
     public class ProjectTypeInfo : ContainerTypeInfo
     {
@@ -11,7 +10,7 @@
         {
             this.AddChildTypeInfo(new BuildDefinitionsTypeInfo());
             this.AddChildTypeInfo(new BuildsTypeInfo());
-            this.AddChildTypeInfo(new GitReposTypeInfo());
+            this.AddChildTypeInfo(new ReposTypeInfo());
         }
 
         public override string Name

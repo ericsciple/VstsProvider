@@ -1,7 +1,7 @@
 ﻿namespace VstsProvider.DriveItems
 {
     using System.Management.Automation;
-    using ProjectCollections;
+    using VstsProvider.DriveItems.Projects;
 
     public sealed class RootTypeInfo : ContainerTypeInfo
     {

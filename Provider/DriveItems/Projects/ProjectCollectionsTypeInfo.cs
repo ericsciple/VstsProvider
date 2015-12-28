@@ -1,4 +1,4 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects
+﻿namespace VstsProvider.DriveItems.Projects
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,34 +6,32 @@
     using System.Reflection;
     using Microsoft.TeamFoundation.Core.WebApi;
     using Microsoft.VisualStudio.Services.WebApi;
-    using DriveItems = VstsProvider.DriveItems;
 
-    public class ProjectsTypeInfo : HttpClientContainerTypeInfo
+    public sealed class ProjectCollectionsTypeInfo : HttpClientContainerTypeInfo
     {
-        public ProjectsTypeInfo()
+        public ProjectCollectionsTypeInfo()
         {
-            this.AddChildTypeInfo(new ProjectTypeInfo());
+            this.AddChildTypeInfo(new ProjectCollectionTypeInfo());
         }
 
         public override string Name
         {
             get
             {
-                return "Projects";
+                return "ProjectCollections";
             }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment)");
-            ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
+            segment.GetProvider().WriteDebug("DriveItems.Projects.ProjectCollections.GetChildDriveItems(Segment)");
+            ProjectCollectionHttpClient httpClient = this.GetHttpClient(segment) as ProjectCollectionHttpClient;
             return this.Wrap(
                 segment,
                 (int? top, int? skip) =>
                 {
                     return httpClient
-                        .GetProjects(
-                            stateFilter: null,
+                        .GetProjectCollections(
                             top: top,
                             skip: skip,
                             userState: null)
@@ -45,13 +43,13 @@
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.GetChildDriveItems(Segment, Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.ProjectCollections.GetChildDriveItems(Segment,Segment)");
             if (childSegment.HasWildcard)
             {
                 return base.GetChildDriveItems(segment, childSegment);
             }
 
-            ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
+            ProjectCollectionHttpClient httpClient = this.GetHttpClient(segment) as ProjectCollectionHttpClient;
             return this.Wrap(
                 segment,
                 () =>
@@ -60,10 +58,8 @@
                         this.ConvertToChildDriveItem(
                             segment,
                             httpClient
-                            .GetProject(
+                            .GetProjectCollection(
                                 id: childSegment.Name,
-                                includeCapabilities: true,
-                                includeHistory: true,
                                 userState: null)
                             .Result)
                     };
@@ -75,8 +71,7 @@
             return parentSegment
                 .GetProvider()
                 .PSVstsDriveInfo
-                .GetHttpClient<ProjectHttpClient>(
-                    SegmentHelper.FindProjectCollectionName(parentSegment));
+                .GetHttpClient<ProjectCollectionHttpClient>();
         }
     }
 }

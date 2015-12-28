@@ -1,4 +1,4 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects.BuildDefinitions
+﻿namespace VstsProvider.DriveItems.Projects.Build
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -23,7 +23,7 @@
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.BuildDefinitions.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.BuildDefinitions.GetChildDriveItems(Segment)");
             BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
             return this.Wrap(
                 segment,
@@ -40,7 +40,7 @@
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.Builds.GetChildDriveItems(Segment, Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.BuildDefinitions.GetChildDriveItems(Segment, Segment)");
             if (childSegment.HasWildcard)
             {
                 return base.GetChildDriveItems(segment, childSegment);

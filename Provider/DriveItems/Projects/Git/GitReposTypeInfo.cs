@@ -1,38 +1,38 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects.Builds
+﻿namespace VstsProvider.DriveItems.Projects.Git
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
-    using Microsoft.TeamFoundation.Build.WebApi;
+    using Microsoft.TeamFoundation.SourceControl.WebApi;
     using Microsoft.VisualStudio.Services.WebApi;
 
-    public sealed class BuildsTypeInfo : BuildHttpClientContainerTypeInfo
+    public sealed class ReposTypeInfo : GitHttpClientContainerTypeInfo
     {
-        public BuildsTypeInfo()
+        public ReposTypeInfo()
         {
-            this.AddChildTypeInfo(new BuildTypeInfo());
+            this.AddChildTypeInfo(new RepoTypeInfo());
         }
 
         public override string Name
         {
             get
             {
-                return "Builds";
+                return "GitRepos";
             }
         }
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.Builds.GetChildDriveItems(Segment)");
-            BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment)");
+            GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
                 () =>
                 {
                     return httpClient
-                        .GetBuildsAsync(
+                        .GetRepositoriesAsync(
                             project: SegmentHelper.FindProjectName(segment),
-                            top: 25)
+                            includeLinks: true)
                         .Result
                         .Select(x => this.ConvertToChildDriveItem(segment, x))
                         .ToArray();
@@ -41,13 +41,13 @@
 
         public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.ProjectCollections.Projects.Builds.GetChildDriveItems(Segment, Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment, Segment)");
             if (childSegment.HasWildcard)
             {
                 return base.GetChildDriveItems(segment, childSegment);
             }
 
-            BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
+            GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
                 () =>
@@ -56,11 +56,10 @@
                         this.ConvertToChildDriveItem(
                             segment,
                             httpClient
-                            .GetBuildsAsync(
+                            .GetRepositoryAsync(
                                 project: SegmentHelper.FindProjectName(segment),
-                                buildNumber: childSegment.Name)
-                            .Result
-                            .Single())
+                                repositoryId: childSegment.Name)
+                            .Result)
                     };
                 });
         }

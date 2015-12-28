@@ -1,16 +1,16 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects.GitRepos
+﻿namespace VstsProvider.DriveItems.Projects.Build
 {
-    using Microsoft.TeamFoundation.SourceControl.WebApi;
+    using Microsoft.TeamFoundation.Build.WebApi;
     using Microsoft.VisualStudio.Services.WebApi;
 
-    public abstract class GitHttpClientContainerTypeInfo : HttpClientContainerTypeInfo
+    public abstract class BuildHttpClientContainerTypeInfo : HttpClientContainerTypeInfo
     {
         protected sealed override VssHttpClientBase GetHttpClient(Segment parentSegment)
         {
             return parentSegment
                 .GetProvider()
                 .PSVstsDriveInfo
-                .GetHttpClient<GitHttpClient>(
+                .GetHttpClient<BuildHttpClient>(
                     SegmentHelper.FindProjectCollectionName(parentSegment));
         }
     }

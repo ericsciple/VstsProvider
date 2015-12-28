@@ -1,11 +1,11 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects.GitRepos
+﻿namespace VstsProvider.DriveItems.Projects.Git
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
 
-    public sealed class GitRepoTypeInfo : LeafTypeInfo
+    public sealed class RepoTypeInfo : LeafTypeInfo
     {
         public override string Name
         {

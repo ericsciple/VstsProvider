@@ -1,8 +1,7 @@
 ﻿namespace VstsProvider.DriveItems
 {
     using System;
-    using ProjectCollections;
-    using ProjectCollections.Projects;
+    using VstsProvider.DriveItems.Projects;
 
     public static class SegmentHelper
     {

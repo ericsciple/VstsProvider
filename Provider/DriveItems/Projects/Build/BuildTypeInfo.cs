@@ -1,4 +1,4 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections.Projects.Builds
+﻿namespace VstsProvider.DriveItems.Projects.Build
 {
     using System;
     using System.Collections.Generic;

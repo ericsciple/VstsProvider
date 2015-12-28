@@ -1,9 +1,6 @@
-﻿namespace VstsProvider.DriveItems.ProjectCollections
+﻿namespace VstsProvider.DriveItems.Projects
 {
     using System.Management.Automation;
-    //using BuildQueues;
-    //using Processes;
-    using Projects;
 
     public sealed class ProjectCollectionTypeInfo : ContainerTypeInfo
     {
