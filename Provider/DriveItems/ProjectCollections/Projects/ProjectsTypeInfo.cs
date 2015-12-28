@@ -11,13 +11,8 @@
     public class ProjectsTypeInfo : HttpClientContainerTypeInfo
     {
         public ProjectsTypeInfo()
-            : this(new ProjectTypeInfo())
         {
-        }
-
-        public ProjectsTypeInfo(DriveItems::TypeInfo childTypeInfo)
-        {
-            this.AddChildTypeInfo(childTypeInfo);
+            this.AddChildTypeInfo(new ProjectTypeInfo());
         }
 
         public override string Name

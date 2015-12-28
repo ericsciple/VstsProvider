@@ -7,6 +7,7 @@
     using System.Management.Automation;
     using System.Text;
     using System.Management.Automation.Runspaces;
+    using Microsoft.TeamFoundation.Build.WebApi;
     using Microsoft.VisualStudio.Services.WebApi;
 
     public abstract class HttpClientContainerTypeInfo : ContainerTypeInfo
