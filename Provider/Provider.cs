@@ -71,7 +71,7 @@ namespace VstsProvider
             // try
             // {
             string childName = this.ParsePath(rawPath).PSChildName;
-            //this.WriteDebug(" Result: '{0}'", childName);
+            this.WriteDebug(" Result: '{0}'", childName);
             return childName;
             // }
             // catch
@@ -99,7 +99,7 @@ namespace VstsProvider
         {
              this.WriteDebug("VstsProvider.Provider.GetParentPath(path: '{0}', root: '{1}')", rawPath, root);
             string parentPath = this.ParsePath(rawPath).PSParentPath;
-            //this.WriteDebug(" Result: '{0}'", parentPath);
+            this.WriteDebug(" Result: '{0}'", parentPath);
             return parentPath;
         }
 

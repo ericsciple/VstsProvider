@@ -28,7 +28,7 @@
             <Wrap/>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>PSVstsName</PropertyName>
+                <PropertyName>PSVstsChildName</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -50,7 +50,7 @@
             <Wrap/>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>PSVstsName</PropertyName>
+                <PropertyName>PSVstsChildName</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -67,7 +67,7 @@
           <ListEntry>
             <ListItems>
               <ListItem>
-                <PropertyName>PSVstsName</PropertyName>
+                <PropertyName>PSVstsChildName</PropertyName>
               </ListItem>
             </ListItems>
           </ListEntry>
@@ -83,7 +83,7 @@
         <WideEntries>
           <WideEntry>
             <WideItem>
-              <PropertyName>PSVstsName</PropertyName>
+              <PropertyName>PSVstsChildName</PropertyName>
             </WideItem>
           </WideEntry>
         </WideEntries>
