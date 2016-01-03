@@ -1,3 +1,4 @@
+# TODO: FIX THIS TO CALL THE SEGMENT HELPER.
 function ConvertFrom-EscapedSegment {
     [CmdletBinding()]
     param(
