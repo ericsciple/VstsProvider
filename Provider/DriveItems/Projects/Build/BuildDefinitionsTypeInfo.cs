@@ -21,9 +21,9 @@
             }
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public override IEnumerable<PSObject> GetItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.BuildDefinitions.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.BuildDefinitions.GetItems(Segment)");
             BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
             return this.Wrap(
                 segment,
@@ -31,21 +31,16 @@
                 {
                     return httpClient
                         .GetDefinitionsAsync(
-                            project: SegmentHelper.FindProjectName(segment))
+                            project: SegmentHelper.GetProjectName(segment))
                         .Result
                         .Select(x => this.ConvertToChildDriveItem(segment, x))
                         .ToArray();
                 });
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public override IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.BuildDefinitions.GetChildDriveItems(Segment, Segment)");
-            if (childSegment.HasWildcard)
-            {
-                return base.GetChildDriveItems(segment, childSegment);
-            }
-
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.BuildDefinitions.GetLiteralItem(Segment, Segment)");
             BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
             return this.Wrap(
                 segment,
@@ -56,8 +51,8 @@
                             segment,
                             httpClient
                             .GetDefinitionsAsync(
-                                project: SegmentHelper.FindProjectName(segment),
-                                name: childSegment.Name)
+                                project: SegmentHelper.GetProjectName(segment),
+                                name: childSegment.UnescapedName)
                             .Result
                             .Single())
                     };

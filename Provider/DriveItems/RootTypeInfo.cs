@@ -15,7 +15,7 @@
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.AddPSVstsName(this.Name);
+            psObject.AddEscapedPSVstsChildName((obj as Provider).PSVstsDriveInfo.Name);
             return psObject;
         }
 

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
-    using System.Reflection;
+    //using System.Reflection;
     using Microsoft.TeamFoundation.Core.WebApi;
     using Microsoft.VisualStudio.Services.WebApi;
 
@@ -22,9 +22,9 @@
             }
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public override IEnumerable<PSObject> GetItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.ProjectCollections.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.ProjectCollections.GetItems(Segment)");
             ProjectCollectionHttpClient httpClient = this.GetHttpClient(segment) as ProjectCollectionHttpClient;
             return this.Wrap(
                 segment,
@@ -41,14 +41,9 @@
                 });
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public override IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.ProjectCollections.GetChildDriveItems(Segment,Segment)");
-            if (childSegment.HasWildcard)
-            {
-                return base.GetChildDriveItems(segment, childSegment);
-            }
-
+            segment.GetProvider().WriteDebug("DriveItems.Projects.ProjectCollections.GetLiteralItem(Segment,Segment)");
             ProjectCollectionHttpClient httpClient = this.GetHttpClient(segment) as ProjectCollectionHttpClient;
             return this.Wrap(
                 segment,
@@ -59,7 +54,7 @@
                             segment,
                             httpClient
                             .GetProjectCollection(
-                                id: childSegment.Name,
+                                id: childSegment.UnescapedName,
                                 userState: null)
                             .Result)
                     };

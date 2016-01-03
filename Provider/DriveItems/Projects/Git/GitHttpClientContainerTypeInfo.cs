@@ -11,7 +11,7 @@
                 .GetProvider()
                 .PSVstsDriveInfo
                 .GetHttpClient<GitHttpClient>(
-                    SegmentHelper.FindProjectCollectionName(parentSegment));
+                    SegmentHelper.GetProjectCollectionName(parentSegment));
         }
     }
 }

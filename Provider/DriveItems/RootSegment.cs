@@ -4,7 +4,7 @@
 
     public sealed class RootSegment : Segment
     {
-        public RootSegment(Provider provider, Path path, string name, string remainingNames)
+        public RootSegment(Provider provider, Path path, string name, Queue<string> remainingNames)
             : base(
                 provider: provider,
                 path: path,

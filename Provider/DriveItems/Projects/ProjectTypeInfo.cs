@@ -24,7 +24,7 @@
         public override PSObject ConvertToDriveItem(Segment parentSegment, object obj)
         {
             PSObject psObject = base.ConvertToDriveItem(parentSegment, obj);
-            psObject.AddPSVstsName(psObject.Properties["name"].Value as string);
+            psObject.EscapeAndAddPSVstsChildName(psObject.Properties["name"].Value as string);
             return psObject;
         }
     }

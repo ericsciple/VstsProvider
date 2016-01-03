@@ -5,14 +5,14 @@ function ConvertFrom-EscapedSegment {
         [string]$Name)
 
     $Name.
-        Replace('%', '%25'). # Must be first for escaping.
+        Replace('%', '%25'). # Must be escaped first.
         Replace('\', '%5C').
-        Replace('/', '%2F').
-        Replace(':', '%3A').
+        Replace('/', '%2F')#.
+        #Replace(':', '%3A').
         #Replace('*', '???').
-        Replace('?', '%3F').
-        Replace('"', '%22').
-        Replace('<', '%3C').
-        Replace('>', '%3E').
-        Replace('|', '%7C')
+        #Replace('?', '%3F').
+        #Replace('"', '%22').
+        #Replace('<', '%3C').
+        #Replace('>', '%3E').
+        #Replace('|', '%7C')
 }

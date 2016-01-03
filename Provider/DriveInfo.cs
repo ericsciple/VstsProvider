@@ -12,10 +12,16 @@
     public sealed class DriveInfo : PSDriveInfo
     {
         private readonly DriveParameters driveParameters;
-        private VssCredentials vssCredentials;
 
         public DriveInfo(PSDriveInfo driveInfo, DriveParameters driveParameters) : base(driveInfo)
         {
+            // Validate root.
+            new Uri(this.Root, UriKind.Absolute);
+            if (this.Root.Contains(@"\") || this.Root.EndsWith("/"))
+            {
+                throw new ArgumentException(@"Root must not contain '\' or end with '/'.");
+            }
+
             // Store the drive parameters.
             this.driveParameters = driveParameters;
 

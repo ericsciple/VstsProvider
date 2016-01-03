@@ -36,131 +36,80 @@ namespace VstsProvider
             base.WriteVerbose(message);
         }
 
-        protected override string[] ExpandPath(string rawPath)
+        protected override string[] ExpandPath(string wildcardPath)
         {
-            this.WriteDebug("VstsProvider.Provider.ExpandPath(...)");
-            Path path = this.ParsePath(rawPath);
-            Segment lastSegment = path.Segments.Last();
-            Segment lastParentSegment = lastSegment.GetParent();
-            WildcardPattern pattern = new WildcardPattern(lastSegment.Name, WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase);
-
-            // TODO: IS THIS REQUIRED?
-            if (lastParentSegment.ItemTypeInfo is LeafTypeInfo)
-            {
-                return new string[0];
-            }
-
-            return (lastParentSegment.ItemTypeInfo as ContainerTypeInfo)
-                .GetChildDriveItems(lastParentSegment)
-                .Select(x => x.GetPSVstsName())
-                .Where(x => pattern.IsMatch(x))
-                .Select(x => string.Format(@"{0}\{1}", lastParentSegment.RelativePath, x))
+            this.WriteDebug("VstsProvider.Provider.ExpandPath(wildcardPath: '{0}')", wildcardPath);
+            Path path = this.ParsePath(wildcardPath);
+            string parentPath = path.PSParentPath;
+            return path.GetItemByWildcard()
+                .Select(x => Combine(parentPath, x.GetPSVstsChildName()))
                 .ToArray();
         }
 
         protected override void GetChildItems(string rawPath, bool recurse)
         {
-            this.WriteDebug("VstsProvider.Provider.GetChildItems(...)");
-            Path path = this.ParsePath(rawPath);
-            Segment lastSegment = path.Segments.Last();
-            Segment lastContainerSegment =
-                lastSegment.ItemTypeInfo is ContainerTypeInfo
-                ? lastSegment
-                : lastSegment.GetParent();
-            foreach (PSObject psObject in path.GetChildDriveItems())
-            {
-                string relativePath =
-                    string.Format(
-                        CultureInfo.InvariantCulture,
-                        @"{0}\{1}",
-                        lastContainerSegment.RelativePath,
-                        psObject.GetPSVstsName())
-                    .TrimStart('\\');
-                this.WriteItemObject(
-                    item: psObject,
-                    path: relativePath,
-                    isContainer: psObject.GetPSVstsIsContainer());
-            }
-
+            this.WriteDebug("VstsProvider.Provider.GetChildItems(path: '{0}', recurse: {1})", rawPath, recurse);
             if (recurse)
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException("Recursion not supported.");
+            }
+
+            Path path = this.ParsePath(string.Concat(rawPath, @"\*"));
+            string parentPath = path.PSParentPath;
+            foreach (PSObject psObject in path.GetItemByWildcard())
+            {
+                this.WriteItemObject(
+                    item: psObject,
+                    path: Combine(parentPath, psObject.GetPSVstsChildName()),
+                    isContainer: psObject.GetPSVstsIsContainer());
             }
         }
 
         protected override string GetChildName(string rawPath)
         {
-            this.WriteDebug("VstsProvider.Provider.GetChildName(string)");
-            try
-            {
-                return Path.GetChildName(provider: this, rawPath: rawPath);
-            }
-            catch
-            {
-                return (rawPath ?? string.Empty)
-                    .Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries)
-                    .LastOrDefault() ?? string.Empty;
-            }
+            this.WriteDebug("VstsProvider.Provider.GetChildName(path: '{0}')", rawPath);
+            // try
+            // {
+            string childName = this.ParsePath(rawPath).PSChildName;
+            //this.WriteDebug(" Result: '{0}'", childName);
+            return childName;
+            // }
+            // catch
+            // {
+            //     return (rawPath ?? string.Empty)
+            //         .Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries)
+            //         .LastOrDefault() ?? string.Empty;
+            // }
         }
 
-        protected override void GetItem(string rawPath)
+        protected override void GetItem(string literalPath)
         {
-            this.WriteDebug("VstsProvider.Provider.GetItem(...)");
-            Path path = this.ParsePath(rawPath);
-            foreach (PSObject psObject in path.GetDriveItem())
+            this.WriteDebug("VstsProvider.Provider.GetItem(literalPath: '{0}')", literalPath);
+            Path path = this.ParsePath(literalPath);
+            foreach (PSObject psObject in path.GetLiteralItem())
             {
-                string relativePath;
-                Segment parentSegment = psObject.GetPSVstsParentSegment();
-                if (parentSegment == null)
-                {
-                    relativePath = string.Empty;
-                }
-                else
-                {
-                    relativePath =
-                        string.Format(
-                            CultureInfo.InvariantCulture,
-                            @"{0}\{1}",
-                            psObject.GetPSVstsParentSegment().RelativePath,
-                            psObject.GetPSVstsName())
-                        .TrimStart('\\');
-                }
-
                 this.WriteItemObject(
                     item: psObject,
-                    path: relativePath,
+                    path: path.PSPath,
                     isContainer: psObject.GetPSVstsIsContainer());
             }
         }
 
         protected override string GetParentPath(string rawPath, string root)
         {
-            this.WriteDebug("VstsProvider.Provider.GetParentPath(...)");
-            Path path = this.ParsePath(rawPath);
-            Segment lastSegment = path.Segments.Last();
-            Segment lastParentSegment = lastSegment.GetParent();
-            if (lastParentSegment == null)
-            {
-                return string.Empty;
-            }
-
-            return rawPath.Substring(
-                    startIndex: 0,
-                    length: rawPath.Length - lastSegment.Name.Length)
-                .TrimEnd('\\');
+             this.WriteDebug("VstsProvider.Provider.GetParentPath(path: '{0}', root: '{1}')", rawPath, root);
+            string parentPath = this.ParsePath(rawPath).PSParentPath;
+            //this.WriteDebug(" Result: '{0}'", parentPath);
+            return parentPath;
         }
 
-        protected override bool IsItemContainer(string rawPath)
+        protected override bool IsItemContainer(string literalPath)
         {
-            this.WriteDebug("VstsProvider.Provider.IsItemContainer(...)");
+            this.WriteDebug("VstsProvider.Provider.IsItemContainer(literalPath: '{0}')", literalPath);
             try
             {
-                Path path = this.ParsePath(rawPath);
-                Segment lastSegment = path.Segments.Last();
-                if (lastSegment.ItemTypeInfo is ContainerTypeInfo)
-                {
-                    return true;
-                }
+                Path path = this.ParsePath(literalPath);
+                return path.Segments.Last().ItemTypeInfo is ContainerTypeInfo;
             }
             catch
             {
@@ -171,7 +120,7 @@ namespace VstsProvider
 
         protected override bool IsValidPath(string rawPath)
         {
-            this.WriteDebug("VstsProvider.Provider.IsValidPath(...)");
+            this.WriteDebug("VstsProvider.Provider.IsValidPath(path: '{0}')", rawPath);
             try
             {
                 this.ParsePath(rawPath);
@@ -183,16 +132,13 @@ namespace VstsProvider
             }
         }
 
-        protected override bool ItemExists(string rawPath)
+        protected override bool ItemExists(string literalPath)
         {
-            this.WriteDebug("VstsProvider.Provider.ItemExists(...)");
+            this.WriteDebug("VstsProvider.Provider.ItemExists(literalPath: '{0}')", literalPath);
             try
             {
-                Path path = this.ParsePath(rawPath);
-                if (path.GetDriveItem().Any())
-                {
-                    return true;
-                }
+                Path path = this.ParsePath(literalPath);
+                return path.GetLiteralItem().Any();
             }
             catch
             {
@@ -213,18 +159,13 @@ namespace VstsProvider
             return new DriveParameters();
         }
 
-        protected override void NewItem(string rawPath, string itemTypeName, object newItemValue)
+        private static string Combine(string p1, string p2)
         {
-            this.WriteDebug("VstsProvider.Provider.NewItem(...)");
-            Path path = this.ParsePath(rawPath);
-            path.NewItem(this.DynamicParameters);
-        }
-
-        protected override object NewItemDynamicParameters(string rawPath, string itemTypeName, object newItemValue)
-        {
-            this.WriteDebug("VstsProvider.Provider.NewItemDynamicParameters(...)");
-            Path path = this.ParsePath(rawPath);
-            return path.NewItemDynamicParameters();
+            string separator =
+                p1.EndsWith(@"\")
+                ? string.Empty
+                : @"\";
+            return string.Concat(p1, separator, p2);
         }
 
         private Path ParsePath(string rawPath)

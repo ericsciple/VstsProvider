@@ -6,9 +6,17 @@
 
     public static class SegmentHelper
     {
-        public static string FindBranchName(Segment startingSegment)
+        public static string Escape(string name)
         {
-            string refName = Uri.UnescapeDataString(Find(startingSegment, "ref name", typeof(RefTypeInfo)));
+            return (name ?? string.Empty)
+                .Replace("%", "%25") // Must be escaped first.
+                .Replace(@"\", "%5C")
+                .Replace("/", "%2F");
+        }
+
+        public static string GetBranchName(Segment startingSegment)
+        {
+            string refName = GetUnescaped(startingSegment, "ref name", typeof(RefTypeInfo));
             if (!refName.StartsWith("heads/"))
             {
                 throw new Exception(string.Format("Unexpected branch name format: {0}. Expected format: heads/[...]", refName));
@@ -17,22 +25,30 @@
             return refName.Substring("heads/".Length);
         }
 
-        public static string FindProjectCollectionName(Segment startingSegment)
+        public static string GetProjectCollectionName(Segment startingSegment)
         {
-            return Find(startingSegment, "collection name", typeof(ProjectCollectionTypeInfo));
+            return GetUnescaped(startingSegment, "collection name", typeof(ProjectCollectionTypeInfo));
         }
 
-        public static string FindProjectName(Segment startingSegment)
+        public static string GetProjectName(Segment startingSegment)
         {
-            return Find(startingSegment, "team project name", typeof(ProjectTypeInfo));
+            return GetUnescaped(startingSegment, "team project name", typeof(ProjectTypeInfo));
         }
 
-        public static string FindRepoName(Segment startingSegment)
+        public static string GetRepoName(Segment startingSegment)
         {
-            return Find(startingSegment, "repo name", typeof(RepoTypeInfo));
+            return GetUnescaped(startingSegment, "repo name", typeof(RepoTypeInfo));
+        }
+        
+        public static string Unescape(string name)
+        {
+            return (name ?? string.Empty)
+                .Replace("%5C", @"\")
+                .Replace("%2F", "/")
+                .Replace("%25", "%"); // Must be unescaped last.
         }
 
-        private static string Find(Segment startingSegment, string description, params Type[] types)
+        private static string GetUnescaped(Segment startingSegment, string description, params Type[] types)
         {
             while (startingSegment != null)
             {
@@ -41,7 +57,7 @@
                 {
                     if (segmentItemTypeInfo == type)
                     {
-                        return startingSegment.Name;
+                        return Unescape(startingSegment.Name);
                     }
                 }
 

@@ -17,42 +17,28 @@
             }
         }
 
-        public virtual IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public virtual IEnumerable<PSObject> GetItems(Segment segment)
         {
             return this.ChildTypeInfo
                 .Values
                 .Where(x => x is HttpClientContainerTypeInfo)
-                .OrderBy(x => x.Name)
+                .OrderBy(x => x.Name, StringComparer.CurrentCultureIgnoreCase)
                 .Select(x => x.ConvertToDriveItem(parentSegment: segment, obj: null));
         }
 
-        public virtual IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public virtual IEnumerable<PSObject> GetItemByWildcard(Segment segment, Segment childSegment)
         {
-            // Handle wildcard child segment.
-            if (childSegment.HasWildcard)
-            {
-                WildcardPattern pattern;
-                segment.GetProvider().WriteDebug("childSegment.HasWildcard");
-                pattern = new WildcardPattern(
-                    pattern: childSegment.Name,
-                    options: WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase);
-                return this.GetChildDriveItems(segment)
-                    .Where(x => pattern.IsMatch(x.GetPSVstsName()));
-            }
-
-            // Handle non-wildcard child segment.
-            return this.GetChildDriveItems(segment)
-                .Where(x => string.Equals(childSegment.Name, x.GetPSVstsName(), StringComparison.OrdinalIgnoreCase));
+            WildcardPattern pattern = new WildcardPattern(
+                pattern: childSegment.Name,
+                options: WildcardOptions.IgnoreCase);
+            return this.GetItems(segment)
+                .Where(x => pattern.IsMatch(x.GetPSVstsChildName()));
         }
 
-        public virtual IEnumerable<PSObject> NewChildDriveItem(Segment segment, Segment childSegment, object dynamicParameters)
+        public virtual IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            throw new NotSupportedException();
-        }
-
-        public virtual object NewChildDriveItemDynamicParameters()
-        {
-            return new object();
+            return this.GetItems(segment)
+                .Where(x => string.Equals(x.GetPSVstsChildName(), childSegment.Name, StringComparison.CurrentCultureIgnoreCase));
         }
 
         protected void AddChildTypeInfo(TypeInfo childTypeInfo)

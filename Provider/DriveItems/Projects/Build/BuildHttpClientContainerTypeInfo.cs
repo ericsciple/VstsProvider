@@ -11,7 +11,7 @@
                 .GetProvider()
                 .PSVstsDriveInfo
                 .GetHttpClient<BuildHttpClient>(
-                    SegmentHelper.FindProjectCollectionName(parentSegment));
+                    SegmentHelper.GetProjectCollectionName(parentSegment));
         }
     }
 }

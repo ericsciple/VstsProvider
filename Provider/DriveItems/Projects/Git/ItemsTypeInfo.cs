@@ -22,21 +22,21 @@
             }
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public override IEnumerable<PSObject> GetItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Items.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Items.GetItems(Segment)");
             GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
                 () =>
                 {
                     GitVersionDescriptor versionDescriptor = new GitVersionDescriptor();
-                    versionDescriptor.Version = SegmentHelper.FindBranchName(segment);
+                    versionDescriptor.Version = SegmentHelper.GetBranchName(segment);
                     versionDescriptor.VersionType = GitVersionType.Branch;
                     return httpClient
                         .GetItemsAsync(
-                            project: SegmentHelper.FindProjectName(segment),
-                            repositoryId: SegmentHelper.FindRepoName(segment),
+                            project: SegmentHelper.GetProjectName(segment),
+                            repositoryId: SegmentHelper.GetRepoName(segment),
                             recursionLevel: VersionControlRecursionType.Full,
                             versionDescriptor: versionDescriptor)
                         .Result
@@ -45,30 +45,25 @@
                 });
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public override IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment, Segment)");
-            if (childSegment.HasWildcard)
-            {
-                return base.GetChildDriveItems(segment, childSegment);
-            }
-
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetLiteralItem(Segment, Segment)");
             GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
                 () =>
                 {
                     GitVersionDescriptor versionDescriptor = new GitVersionDescriptor();
-                    versionDescriptor.Version = SegmentHelper.FindBranchName(segment);
+                    versionDescriptor.Version = SegmentHelper.GetBranchName(segment);
                     versionDescriptor.VersionType = GitVersionType.Branch;
                     return new[] {
                         this.ConvertToChildDriveItem(
                             segment,
                             httpClient
                             .GetItemAsync(
-                                project: SegmentHelper.FindProjectName(segment),
-                                repositoryId: SegmentHelper.FindRepoName(segment),
-                                path: Uri.UnescapeDataString(childSegment.Name),
+                                project: SegmentHelper.GetProjectName(segment),
+                                repositoryId: SegmentHelper.GetRepoName(segment),
+                                path: Uri.UnescapeDataString(childSegment.UnescapedName),
                                 versionDescriptor: versionDescriptor)
                             .Result)
                     };

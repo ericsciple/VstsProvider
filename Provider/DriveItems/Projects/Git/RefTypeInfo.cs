@@ -1,8 +1,6 @@
 ﻿namespace VstsProvider.DriveItems.Projects.Git
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Management.Automation;
     using Microsoft.TeamFoundation.SourceControl.WebApi;
 
@@ -31,7 +29,7 @@
             }
 
             PSObject psObject = base.ConvertToDriveItem(parentSegment, r);
-            psObject.AddPSVstsName(Uri.EscapeDataString(r.Name.Substring("refs/".Length)));
+            psObject.EscapeAndAddPSVstsChildName(r.Name.Substring("refs/".Length));
             return psObject;
         }
     }

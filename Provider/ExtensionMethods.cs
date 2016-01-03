@@ -5,14 +5,14 @@ namespace VstsProvider
 
     public static class ExtensionMethods
     {
+        public static void AddEscapedPSVstsChildName(this PSObject psObject, string value)
+        {
+            psObject.Properties.Add(new PSNoteProperty("PSVstsChildName", value));
+        }
+
         public static void AddPSVstsIsContainer(this PSObject psObject, bool value)
         {
             psObject.Properties.Add(new PSNoteProperty("PSVstsIsContainer", value));
-        }
-
-        public static void AddPSVstsName(this PSObject psObject, string value)
-        {
-            psObject.Properties.Add(new PSNoteProperty("PSVstsName", value));
         }
 
         public static void AddPSVstsParentSegment(this PSObject psObject, Segment value)
@@ -30,14 +30,19 @@ namespace VstsProvider
             psObject.Properties.Add(new PSNoteProperty("PSVstsTypeInfo", value));
         }
 
+        public static void EscapeAndAddPSVstsChildName(this PSObject psObject, string value)
+        {
+            psObject.AddEscapedPSVstsChildName(SegmentHelper.Escape(value));
+        }
+
+        public static string GetPSVstsChildName(this PSObject psObject)
+        {
+            return psObject.Properties["PSVstsChildName"].Value as string;
+        }
+
         public static bool GetPSVstsIsContainer(this PSObject psObject)
         {
             return (bool)psObject.Properties["PSVstsIsContainer"].Value;
-        }
-
-        public static string GetPSVstsName(this PSObject psObject)
-        {
-            return psObject.Properties["PSVstsName"].Value as string;
         }
 
         public static Segment GetPSVstsParentSegment(this PSObject psObject)
@@ -53,6 +58,11 @@ namespace VstsProvider
         public static TypeInfo GetPSVstsTypeInfo(this PSObject psObject)
         {
             return psObject.Properties["PSVstsTypeInfo"].Value as TypeInfo;
+        }
+
+        public static string GetUnescapedPSVstsChildName(this PSObject psObject)
+        {
+            return SegmentHelper.Unescape(psObject.GetPSVstsChildName());
         }
     }
 }

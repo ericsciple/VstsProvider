@@ -62,113 +62,113 @@ $PSObject |
             return psObject;
         }
 
-        protected IEnumerable<PSObject> InvokeDeleteWebRequest(Provider provider, string relativeUrl)
-        {
-            // Determine the URL.
-            string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
-            string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
+//         protected IEnumerable<PSObject> InvokeDeleteWebRequest(Provider provider, string relativeUrl)
+//         {
+//             // Determine the URL.
+//             string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
+//             string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
+// 
+//             // Initialize the headers.
+//             Dictionary<string, string> headers = InitializeHeaders(provider, isPostOrPut: false);
+// 
+//             // Format the script.
+//             const string Script = @"
+// [cmdletbinding()]
+// param(
+//     [string]$Url = $(throw 'Missing Url.'),
+//     [hashtable]$Headers = $(throw 'Missing Headers.')
+// )
+// 
+// [bool]$useDefaultCredentials = ""$($Headers.Authorization)"" -eq ''
+// $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Delete -UseDefaultCredentials:$useDefaultCredentials -Headers $Headers -Body $BodyJson
+// if ($response.StatusCode -ne 204) {
+//     throw ""Unexpected response code: $($response.StatusCode) and status description: $($response.StatusDescription)""
+// }
+// 
+// ConvertFrom-Json $response.Content
+// ";
+// 
+//             // Invoke the script.
+//             return provider.InvokeCommand.InvokeScript(
+//                 script: Script,
+//                 useNewScope: true,
+//                 writeToPipeline: PipelineResultTypes.None,
+//                 input: null,
+//                 args: new object[] { url, headers });
+//         }
 
-            // Initialize the headers.
-            Dictionary<string, string> headers = InitializeHeaders(provider, isPostOrPut: false);
+//         protected IEnumerable<PSObject> InvokePostWebRequest(Provider provider, string relativeUrl, string bodyJson)
+//         {
+//             // Determine the URL.
+//             string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
+//             string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
+// 
+//             // Initialize the headers.
+//             Dictionary<string, string> headers = InitializeHeaders(provider, isPostOrPut: true);
+// 
+//             // Format the script.
+//             const string Script = @"
+// [cmdletbinding()]
+// param(
+//     [string]$Url = $(throw 'Missing Url.'),
+//     [hashtable]$Headers = $(throw 'Missing Headers.'),
+//     [string]$BodyJson = $(throw 'Missing BodyJson.')
+// )
+// 
+// [bool]$useDefaultCredentials = ""$($Headers.Authorization)"" -eq ''
+// $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Post -UseDefaultCredentials:$useDefaultCredentials -Headers $Headers -Body $BodyJson
+// if (($response.StatusCode -ne 200) -and ($response.StatusCode -ne 201) -and ($response.StatusCode -ne 202)) {
+//     throw ""Unexpected response code: $($response.StatusCode) and status description: $($response.StatusDescription)""
+// }
+// 
+// ConvertFrom-Json $response.Content
+// ";
+// 
+//             // Invoke the script.
+//             return provider.InvokeCommand.InvokeScript(
+//                 script: Script,
+//                 useNewScope: true,
+//                 writeToPipeline: PipelineResultTypes.None,
+//                 input: null,
+//                 args: new object[] { url, headers, bodyJson });
+//         }
 
-            // Format the script.
-            const string Script = @"
-[cmdletbinding()]
-param(
-    [string]$Url = $(throw 'Missing Url.'),
-    [hashtable]$Headers = $(throw 'Missing Headers.')
-)
-
-[bool]$useDefaultCredentials = ""$($Headers.Authorization)"" -eq ''
-$response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Delete -UseDefaultCredentials:$useDefaultCredentials -Headers $Headers -Body $BodyJson
-if ($response.StatusCode -ne 204) {
-    throw ""Unexpected response code: $($response.StatusCode) and status description: $($response.StatusDescription)""
-}
-
-ConvertFrom-Json $response.Content
-";
-
-            // Invoke the script.
-            return provider.InvokeCommand.InvokeScript(
-                script: Script,
-                useNewScope: true,
-                writeToPipeline: PipelineResultTypes.None,
-                input: null,
-                args: new object[] { url, headers });
-        }
-
-        protected IEnumerable<PSObject> InvokePostWebRequest(Provider provider, string relativeUrl, string bodyJson)
-        {
-            // Determine the URL.
-            string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
-            string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
-
-            // Initialize the headers.
-            Dictionary<string, string> headers = InitializeHeaders(provider, isPostOrPut: true);
-
-            // Format the script.
-            const string Script = @"
-[cmdletbinding()]
-param(
-    [string]$Url = $(throw 'Missing Url.'),
-    [hashtable]$Headers = $(throw 'Missing Headers.'),
-    [string]$BodyJson = $(throw 'Missing BodyJson.')
-)
-
-[bool]$useDefaultCredentials = ""$($Headers.Authorization)"" -eq ''
-$response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Post -UseDefaultCredentials:$useDefaultCredentials -Headers $Headers -Body $BodyJson
-if (($response.StatusCode -ne 200) -and ($response.StatusCode -ne 201) -and ($response.StatusCode -ne 202)) {
-    throw ""Unexpected response code: $($response.StatusCode) and status description: $($response.StatusDescription)""
-}
-
-ConvertFrom-Json $response.Content
-";
-
-            // Invoke the script.
-            return provider.InvokeCommand.InvokeScript(
-                script: Script,
-                useNewScope: true,
-                writeToPipeline: PipelineResultTypes.None,
-                input: null,
-                args: new object[] { url, headers, bodyJson });
-        }
-
-        protected IEnumerable<PSObject> InvokePutWebRequest(Provider provider, string relativeUrl, PSObject psObject)
-        {
-            // Determine the URL.
-            string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
-            string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
-
-            // Initialize the headers.
-            Dictionary<string, string> headers = InitializeHeaders(provider, isPostOrPut: true);
-
-            // Format the script.
-            const string Script = @"
-[cmdletbinding()]
-param(
-    [string]$Url = $(throw 'Missing Url.'),
-    [hashtable]$Headers = $(throw 'Missing Headers.'),
-    $BodyObject = $(throw 'Missing BodyObject.')
-)
-
-[string]$bodyJson = ConvertTo-Json -Depth 1000 $BodyObject
-[bool]$useDefaultCredentials = ""$($Headers.Authorization)"" -eq ''
-$response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Put -UseDefaultCredentials:$useDefaultCredentials -Headers $Headers -Body $bodyJson
-if ($response.StatusCode -ne 200) {
-    throw ""Unexpected response code: $($response.StatusCode) and status description: $($response.StatusDescription)""
-}
-
-ConvertFrom-Json $response.Content
-";
-
-            // Invoke the script.
-            return provider.InvokeCommand.InvokeScript(
-                script: Script,
-                useNewScope: true,
-                writeToPipeline: PipelineResultTypes.None,
-                input: null,
-                args: new object[] { url, headers, psObject });
-        }
+//         protected IEnumerable<PSObject> InvokePutWebRequest(Provider provider, string relativeUrl, PSObject psObject)
+//         {
+//             // Determine the URL.
+//             string serverUrl = provider.PSVstsDriveInfo.Root.TrimEnd('/');
+//             string url = string.Format("{0}/{1}", serverUrl, relativeUrl);
+// 
+//             // Initialize the headers.
+//             Dictionary<string, string> headers = InitializeHeaders(provider, isPostOrPut: true);
+// 
+//             // Format the script.
+//             const string Script = @"
+// [cmdletbinding()]
+// param(
+//     [string]$Url = $(throw 'Missing Url.'),
+//     [hashtable]$Headers = $(throw 'Missing Headers.'),
+//     $BodyObject = $(throw 'Missing BodyObject.')
+// )
+// 
+// [string]$bodyJson = ConvertTo-Json -Depth 1000 $BodyObject
+// [bool]$useDefaultCredentials = ""$($Headers.Authorization)"" -eq ''
+// $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Put -UseDefaultCredentials:$useDefaultCredentials -Headers $Headers -Body $bodyJson
+// if ($response.StatusCode -ne 200) {
+//     throw ""Unexpected response code: $($response.StatusCode) and status description: $($response.StatusDescription)""
+// }
+// 
+// ConvertFrom-Json $response.Content
+// ";
+// 
+//             // Invoke the script.
+//             return provider.InvokeCommand.InvokeScript(
+//                 script: Script,
+//                 useNewScope: true,
+//                 writeToPipeline: PipelineResultTypes.None,
+//                 input: null,
+//                 args: new object[] { url, headers, psObject });
+//         }
 
         protected string JsonStringFormat(string format, params object[] unencodedArgs)
         {

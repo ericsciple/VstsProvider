@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Management.Automation;
     using Microsoft.TeamFoundation.Build.WebApi;
-    using Microsoft.VisualStudio.Services.WebApi;
 
     public sealed class BuildsTypeInfo : BuildHttpClientContainerTypeInfo
     {
@@ -21,9 +20,9 @@
             }
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public override IEnumerable<PSObject> GetItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.Builds.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.Builds.GetItems(Segment)");
             BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
             return this.Wrap(
                 segment,
@@ -31,7 +30,7 @@
                 {
                     return httpClient
                         .GetBuildsAsync(
-                            project: SegmentHelper.FindProjectName(segment),
+                            project: SegmentHelper.GetProjectName(segment),
                             top: 25)
                         .Result
                         .Select(x => this.ConvertToChildDriveItem(segment, x))
@@ -39,14 +38,9 @@
                 });
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public override IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.Builds.GetChildDriveItems(Segment, Segment)");
-            if (childSegment.HasWildcard)
-            {
-                return base.GetChildDriveItems(segment, childSegment);
-            }
-
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Build.Builds.GetLiteralItem(Segment, Segment)");
             BuildHttpClient httpClient = this.GetHttpClient(segment) as BuildHttpClient;
             return this.Wrap(
                 segment,
@@ -57,8 +51,8 @@
                             segment,
                             httpClient
                             .GetBuildsAsync(
-                                project: SegmentHelper.FindProjectName(segment),
-                                buildNumber: childSegment.Name)
+                                project: SegmentHelper.GetProjectName(segment),
+                                buildNumber: childSegment.UnescapedName)
                             .Result
                             .Single())
                     };

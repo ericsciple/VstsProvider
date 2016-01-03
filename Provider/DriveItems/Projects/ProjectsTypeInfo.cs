@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Management.Automation;
-    using System.Reflection;
+    //using System.Reflection;
     using Microsoft.TeamFoundation.Core.WebApi;
     using Microsoft.VisualStudio.Services.WebApi;
-    using DriveItems = VstsProvider.DriveItems;
+    //using DriveItems = VstsProvider.DriveItems;
 
     public class ProjectsTypeInfo : HttpClientContainerTypeInfo
     {
@@ -23,9 +23,9 @@
             }
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public override IEnumerable<PSObject> GetItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Projects.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Projects.GetItems(Segment)");
             ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
             return this.Wrap(
                 segment,
@@ -43,25 +43,21 @@
                 });
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public override IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Projects.GetChildDriveItems(Segment, Segment)");
-            if (childSegment.HasWildcard)
-            {
-                return base.GetChildDriveItems(segment, childSegment);
-            }
-
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Projects.GetLiteralItem(Segment, Segment)");
             ProjectHttpClient httpClient = this.GetHttpClient(segment) as ProjectHttpClient;
             return this.Wrap(
                 segment,
                 () =>
                 {
+                    // TODO: THIS SHOULD NOT THROW IF NOTHING IS RETURNED. VERIFY.
                     return new[] {
                         this.ConvertToChildDriveItem(
                             segment,
                             httpClient
                             .GetProject(
-                                id: childSegment.Name,
+                                id: childSegment.UnescapedName,
                                 includeCapabilities: true,
                                 includeHistory: true,
                                 userState: null)
@@ -76,7 +72,7 @@
                 .GetProvider()
                 .PSVstsDriveInfo
                 .GetHttpClient<ProjectHttpClient>(
-                    SegmentHelper.FindProjectCollectionName(parentSegment));
+                    SegmentHelper.GetProjectCollectionName(parentSegment));
         }
     }
 }

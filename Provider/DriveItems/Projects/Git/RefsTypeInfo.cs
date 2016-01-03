@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Management.Automation;
     using Microsoft.TeamFoundation.SourceControl.WebApi;
-    using Microsoft.VisualStudio.Services.WebApi;
 
     public sealed class RefsTypeInfo : GitHttpClientContainerTypeInfo
     {
@@ -22,9 +21,9 @@
             }
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public override IEnumerable<PSObject> GetItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetItems(Segment)");
             GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
@@ -32,8 +31,8 @@
                 {
                     return httpClient
                         .GetRefsAsync(
-                            project: SegmentHelper.FindProjectName(segment),
-                            repositoryId: SegmentHelper.FindRepoName(segment),
+                            project: SegmentHelper.GetProjectName(segment),
+                            repositoryId: SegmentHelper.GetRepoName(segment),
                             includeLinks: true)
                         .Result
                         .Select(x => this.ConvertToChildDriveItem(segment, x))
@@ -41,32 +40,27 @@
                 });
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public override IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment, Segment)");
-            if (childSegment.HasWildcard)
-            {
-                return base.GetChildDriveItems(segment, childSegment);
-            }
-
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetLiteralItem(Segment, Segment)");
             GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
                 () =>
                 {
-                    string filter = Uri.UnescapeDataString(childSegment.Name);
+                    string filter = childSegment.UnescapedName;
                     string fullName = string.Format("refs/{0}", filter);
                     return new[] {
                         this.ConvertToChildDriveItem(
                             segment,
                             httpClient
                             .GetRefsAsync(
-                                project: SegmentHelper.FindProjectName(segment),
-                                repositoryId: SegmentHelper.FindRepoName(segment),
+                                project: SegmentHelper.GetProjectName(segment),
+                                repositoryId: SegmentHelper.GetRepoName(segment),
                                 filter: filter,
                                 includeLinks: true)
                             .Result
-                            .Single(x => string.Equals(x.Name, fullName, StringComparison.OrdinalIgnoreCase)))
+                            .SingleOrDefault(x => string.Equals(x.Name, fullName, StringComparison.OrdinalIgnoreCase)))
                     };
                 });
         }

@@ -4,7 +4,6 @@
     using System.Linq;
     using System.Management.Automation;
     using Microsoft.TeamFoundation.SourceControl.WebApi;
-    using Microsoft.VisualStudio.Services.WebApi;
 
     public sealed class ReposTypeInfo : GitHttpClientContainerTypeInfo
     {
@@ -21,9 +20,9 @@
             }
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment)
+        public override IEnumerable<PSObject> GetItems(Segment segment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment)");
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetItems(Segment)");
             GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
@@ -31,7 +30,7 @@
                 {
                     return httpClient
                         .GetRepositoriesAsync(
-                            project: SegmentHelper.FindProjectName(segment),
+                            project: SegmentHelper.GetProjectName(segment),
                             includeLinks: true)
                         .Result
                         .Select(x => this.ConvertToChildDriveItem(segment, x))
@@ -39,14 +38,9 @@
                 });
         }
 
-        public override IEnumerable<PSObject> GetChildDriveItems(Segment segment, Segment childSegment)
+        public override IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetChildDriveItems(Segment, Segment)");
-            if (childSegment.HasWildcard)
-            {
-                return base.GetChildDriveItems(segment, childSegment);
-            }
-
+            segment.GetProvider().WriteDebug("DriveItems.Projects.Git.Repos.GetLiteralItem(Segment, Segment)");
             GitHttpClient httpClient = this.GetHttpClient(segment) as GitHttpClient;
             return this.Wrap(
                 segment,
@@ -57,8 +51,8 @@
                             segment,
                             httpClient
                             .GetRepositoryAsync(
-                                project: SegmentHelper.FindProjectName(segment),
-                                repositoryId: childSegment.Name)
+                                project: SegmentHelper.GetProjectName(segment),
+                                repositoryId: childSegment.UnescapedName)
                             .Result)
                     };
                 });
