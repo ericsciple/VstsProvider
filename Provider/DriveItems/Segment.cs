@@ -1,5 +1,6 @@
 ﻿namespace VstsProvider.DriveItems
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -12,14 +13,10 @@
         public Segment(Provider provider, Path path, TypeInfo typeInfo, string name, Queue<string> remainingNames, Segment parent)
         {
             this.provider = provider;
-            //this.provider.WriteDebug("DriveItems.Segment.ctor(...)");
             this.path = path;
             this.ItemTypeInfo = typeInfo;
             this.Name = name;
             this.parent = parent;
-            //this.provider.WriteDebug(string.Format(" this.Name={0}", this.Name));
-            //this.provider.WriteDebug(string.Format(" this.Parent.Name={0}", this.GetParent() == null ? string.Empty : this.GetParent().Name));
-            //this.provider.WriteDebug(string.Format(" remainingNames={0}", remainingNames));
             if (remainingNames.Count == 0)
             {
                 return;
@@ -37,30 +34,40 @@
                 this.path.ThrowInvalid("Leaf path segments cannot contain a child segment.");
             }
 
-            //// Validate this segment is not a wildcard.
-            //if (this.HasWildcard)
-            //{
-            //    this.path.ThrowInvalid("Wildcard must appear in the last segment only.");
-            //}
-
             // Determine the child segment's type info.
             string childName = remainingNames.Dequeue();
             Dictionary<string, TypeInfo> childTypeInfos = (this.ItemTypeInfo as ContainerTypeInfo).ChildTypeInfo;
             TypeInfo childTypeInfo;
-            //this.provider.WriteDebug(string.Format("Determining type info for child segment: {0}", childName));
-            if (childTypeInfos.ContainsKey(childName)
-                && childTypeInfos[childName] is HttpClientContainerTypeInfo)
-            {
-                childTypeInfo = childTypeInfos[childName];
-            }
-            else if (childTypeInfos.Count == 1
+            if (childTypeInfos.Count == 1
                 && !(childTypeInfos.Values.Single() is HttpClientContainerTypeInfo))
             {
+                // Child is always one type (and not an HTTP client).
                 childTypeInfo = childTypeInfos.Values.Single();
             }
             else
             {
-                childTypeInfo = null;
+                TypeInfo[] candidateChildTypeInfos =
+                    childTypeInfos
+                    .Keys
+                    .Where(x => x.StartsWith(childName, StringComparison.OrdinalIgnoreCase))
+                    .Select(x => childTypeInfos[x])
+                    .Where(x => x is HttpClientContainerTypeInfo)
+                    .ToArray();
+                if (candidateChildTypeInfos.Length > 1)
+                {
+                    // More than one HTTP client partial match found.
+                    this.path.ThrowInvalid(string.Format("Ambiguous partial match for segment '{0}'.", childName));
+                    throw new Exception("Previous statement should throw.");
+                }
+                else if (candidateChildTypeInfos.Length == 1)
+                {
+                    // HTTP client found by name or partial name. 
+                    childTypeInfo = candidateChildTypeInfos.Single();
+                }
+                else
+                {
+                    childTypeInfo = null;
+                }
             }
 
             // Create the child segment.
@@ -75,37 +82,10 @@
 
         public Segment Child { get; private set; }
 
-        // public bool HasWildcard
-        // {
-        //     get
-        //     {
-        //         return CheckHasWildcard(this.Name);
-        //     }
-        // }
-
         public TypeInfo ItemTypeInfo { get; private set; }
 
         public string Name { get; private set; }
 
-//         // TODO: ADD BETTER PROPERTIES (DrivePath, ParentDrivePath) THAT ARE ROOTED WITH THE DRIVE NAME.
-//         // TODO: NOT SURE THIS SHOULD BE ROOTED WITH A SLASH.
-//         public string RelativePath
-//         {
-//             get
-//             {
-//                 Stack<string> segmentNames = new Stack<string>();
-//                 Segment segment = this;
-//                 while (!(segment is RootSegment))
-//                 {
-//                     segmentNames.Push(segment.Name);
-//                     segment = segment.GetParent();
-//                 }
-// 
-//                 return segmentNames.Count == 0
-//                     ? string.Empty
-//                     : string.Concat(@"\", string.Join(separator: @"\", values: segmentNames));
-//             }
-//         }
         public string UnescapedName
         {
             get
@@ -119,30 +99,9 @@
             return this.parent;
         }
 
-        // public Path GetPath()
-        // {
-        //     return this.path;
-        // }
-
         public Provider GetProvider()
         {
             return this.provider;
         }
-
-//         private static bool CheckHasWildcard(string name)
-//         {
-//             foreach (char c in name)
-//             {
-//                 if (c == '*'
-//                     || c == '?'
-//                     || c == '['
-//                     || c == ']')
-//                 {
-//                     return true;
-//                 }
-//             }
-// 
-//             return false;
-//         }
     }
 }

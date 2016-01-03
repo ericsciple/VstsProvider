@@ -8,19 +8,19 @@
         <Members>
           <NoteProperty>
             <Name>DefaultDisplayProperty</Name>
-            <Value>PSVstsName</Value>
+            <Value>PSVstsChildName</Value>
           </NoteProperty>
           <PropertySet>
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
               <Name>BuildNumber</Name>
             </ReferencedProperties>
           </PropertySet>
           <PropertySet>
             <Name>DefaultKeyPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
               <Name>BuildNumber</Name>
             </ReferencedProperties>
           </PropertySet>
@@ -119,7 +119,7 @@
           <PropertySet>
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
               <Name>Path</Name>
               <Name>GitObjectType</Name>
             </ReferencedProperties>
@@ -127,7 +127,7 @@
           <PropertySet>
             <Name>DefaultKeyPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
               <Name>Path</Name>
               <Name>GitObjectType</Name>
             </ReferencedProperties>
@@ -149,14 +149,14 @@
           <PropertySet>
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
               <Name>Name</Name>
             </ReferencedProperties>
           </PropertySet>
           <PropertySet>
             <Name>DefaultKeyPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
               <Name>Name</Name>
             </ReferencedProperties>
           </PropertySet>
@@ -199,18 +199,18 @@
         <Members>
           <NoteProperty>
             <Name>DefaultDisplayProperty</Name>
-            <Value>PSVstsName</Value>
+            <Value>PSVstsChildName</Value>
           </NoteProperty>
           <PropertySet>
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
             </ReferencedProperties>
           </PropertySet>
           <PropertySet>
             <Name>DefaultKeyPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
             </ReferencedProperties>
           </PropertySet>
         </Members>
@@ -226,7 +226,7 @@
           <PropertySet>
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
-              <Name>PSVstsName</Name>
+              <Name>PSVstsChildName</Name>
               <Name>LastResponseContext</Name>
             </ReferencedProperties>
           </PropertySet>

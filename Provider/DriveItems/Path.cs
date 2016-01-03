@@ -15,19 +15,6 @@
             // Store the parameters.
             this.provider = provider;
             this.RawPath = rawPath;
-            //this.provider.WriteDebug("DriveItems.Path.ctor(...)");
-            //this.provider.WriteDebug(" this.rawPath: '{0}'", this.RawPath);
-            //this.provider.WriteDebug(" this.provider.DriveInfo.Root: '{0}'", this.provider.PSVstsDriveInfo.Root);
-
-            //string rootSegmentName;
-            // string remainingPath =
-            //     GetIsRooted(this.provider, this.RawPath)
-            //     ? this.RawPath.Substring(startIndex: this.provider.PSVstsDriveInfo.Root.Length)
-            //     : this.RawPath;
-
-//             // Normalize and trim slashes.
-//             Queue<string> remainingNames = new Queue<string>(
-//                 remainingPath.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries));
 
             // Create the segments.
             this.rootSegment = new RootSegment(
@@ -91,27 +78,6 @@
             }
         }
 
-        // public static string GetChildName(Provider provider, string rawPath)
-        // {
-        //     //provider.WriteDebug("VstsProvider.DriveItems.Path::GetChildName(...)");
-        //     Path path = new Path(provider: provider, rawPath: rawPath);
-        //     return path.Segments.Last() is RootSegment
-        //         ? string.Empty
-        //         : path.Segments.Last().Name;
-        // }
-
-        // public static string GetParentPathString(Provider provider, string rawPath)
-        // {
-        //     Path path = new Path(provider: provider, rawPath: rawPath);
-        //     Segment lastSegment = path.Segments.Last();
-        //     Segment lastParentSegment = lastSegment.GetParent();
-        //     return lastSegment is RootSegment || lastParentSegment is RootSegment
-        //         ? 
-        //     {
-        //     }
-        //     }
-        // }
-
         public IEnumerable<PSObject> GetItemByWildcard()
         {
             Segment lastSegment = this.Segments.Last();
@@ -147,12 +113,6 @@
             throw new Exception(string.Format("{0} Invalid path: {1}", prefixSentence, this.RawPath));
         }
 
-        // private static bool GetIsRooted(Provider provider, string rawPath)
-        // {
-        //     string normalizedRoot = string.Concat(provider.PSVstsDriveInfo.Root.Replace('/', '\\'), "\\");
-        //     string normalizedPath = string.Concat((rawPath ?? string.Empty).Replace('/', '\\').TrimEnd('\\'), "\\");
-        //     return normalizedPath.StartsWith(normalizedRoot, StringComparison.OrdinalIgnoreCase);
-        // }
         private static Queue<string> GetRemainingNames(Provider provider, string rawPath)
         {
             string remainingPath;

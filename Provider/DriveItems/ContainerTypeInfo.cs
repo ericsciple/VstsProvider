@@ -37,8 +37,16 @@
 
         public virtual IEnumerable<PSObject> GetLiteralItem(Segment segment, Segment childSegment)
         {
-            return this.GetItems(segment)
-                .Where(x => string.Equals(x.GetPSVstsChildName(), childSegment.Name, StringComparison.CurrentCultureIgnoreCase));
+            if (this.childTypeInfo.Values.Any(x => x is HttpClientContainerTypeInfo))
+            {
+                return this.GetItems(segment)
+                    .Where(x => x.GetPSVstsChildName().StartsWith(childSegment.Name, StringComparison.OrdinalIgnoreCase));
+            }
+            else
+            {
+                return this.GetItems(segment)
+                    .Where(x => string.Equals(x.GetPSVstsChildName(), childSegment.Name, StringComparison.CurrentCultureIgnoreCase));
+            }
         }
 
         protected void AddChildTypeInfo(TypeInfo childTypeInfo)
