@@ -1,5 +1,5 @@
 # VstsProvider
-Map a PS drive to Visual Studio Team Services.
+Map a PS drive to a Visual Studio Team Services account or Team Foundation Server.
 
 Browse the server from the command line as a directory hierarchy.
 
