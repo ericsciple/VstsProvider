@@ -1,19 +1,23 @@
 # VstsProvider
 Map a PS drive to Visual Studio Team Services.
 
+Browse the server from the command line as a directory hierarchy.
+
+Access the REST SDK from the command line.
+
 ## Get/import the module
 ```
 git clone https://github.com/ericsciple/VstsProvider.git
 Import-Module .\VstsProvider\VstsProvider.psd1
 ```
 
-##Map a PS drive to VSTS/TFS
-VSTS:
+## Map a PS drive to VSTS/TFS
+VSTS account:
 ```
 New-VstsPSDrive -Name <account> -ServerUrl https://<account>.visualstudio.com -PersonalAccessToken <token>
 ```
 
-TFS:
+TFS server:
 ```
 New-VstsPSDrive -Name <server> -ServerUrl http://<server>:8080/tfs
 ```
@@ -43,7 +47,9 @@ $projectHttpClient = Get-Item MyServer:\ProjectCollections\DefaultCollection\Pro
 $projectHttpClient | Get-Member | Format-Table
 $projectHttpClient.GetProjectHistory(0, $null).Result | Format-List *
 ```
-Or use shorthand:
+
+## Commands too long?
+No need to type the full name for HTTP client drive items. Just type enough of the name to distinguish it from its siblings.
 ```
-(gi myserver:\projectcollections\defaultcollection\projects).getprojecthistory(0, $null).result | fl *
+gi myserver:\proj\defaultcollection\p\myProject
 ```
