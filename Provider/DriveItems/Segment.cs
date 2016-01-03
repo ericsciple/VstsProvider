@@ -46,23 +46,30 @@
             }
             else
             {
-                TypeInfo[] candidateChildTypeInfos =
+                TypeInfo[] matchingHttpClientChildTypeInfos =
                     childTypeInfos
                     .Keys
                     .Where(x => x.StartsWith(childName, StringComparison.OrdinalIgnoreCase))
                     .Select(x => childTypeInfos[x])
                     .Where(x => x is HttpClientContainerTypeInfo)
                     .ToArray();
-                if (candidateChildTypeInfos.Length > 1)
+                if (matchingHttpClientChildTypeInfos.Length > 1)
                 {
                     // More than one HTTP client partial match found.
                     this.path.ThrowInvalid(string.Format("Ambiguous partial match for segment '{0}'.", childName));
                     throw new Exception("Previous statement should throw.");
                 }
-                else if (candidateChildTypeInfos.Length == 1)
+                else if (matchingHttpClientChildTypeInfos.Length == 1)
                 {
                     // HTTP client found by name or partial name. 
-                    childTypeInfo = candidateChildTypeInfos.Single();
+                    childTypeInfo = matchingHttpClientChildTypeInfos.Single();
+
+                    // Fix the child name, otherwise the partial name can cause strange issues.
+                    // Haven't figured out exactly why, but fixing the child name to match
+                    // works around the issue. For example, if the child name isn't fixed then
+                    // "gi onprem:\proj\defaultcollection" ends up attempting to resolve the
+                    // literal path "onprem:\defaultcollection" instead of "onprem:\proj\defaultcollection".
+                    childName = childTypeInfo.Name;
                 }
                 else
                 {
