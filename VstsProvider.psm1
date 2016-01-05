@@ -52,14 +52,26 @@ Write-Progress -Activity 'Compiling provider.' -Completed
 # Import the provider module.
 Import-Module -Assembly ([VstsProvider.Provider].Assembly)
 
-# Export public functions.
+# Dot source functions.
 . "$PSScriptRoot\PublicFunctions\ConvertFrom-EscapedSegment"
 . "$PSScriptRoot\PublicFunctions\ConvertTo-EscapedSegment"
 . "$PSScriptRoot\PublicFunctions\Get-BuildDefinition"
 . "$PSScriptRoot\PublicFunctions\Export-BuildDefinition"
+. "$PSScriptRoot\PublicFunctions\Export-TestData"
 . "$PSScriptRoot\PublicFunctions\New-PSDrive"
-Export-ModuleMember -Function ConvertFrom-EscapedSegment
-Export-ModuleMember -Function ConvertTo-EscapedSegment
-Export-ModuleMember -Function Get-BuildDefinition
-Export-ModuleMember -Function Export-BuildDefinition
-Export-ModuleMember -Function New-PSDrive
+. "$PSScriptRoot\PublicFunctions\Restore-TestData"
+. "$PSScriptRoot\PrivateFunctions\Export-GitRepos"
+. "$PSScriptRoot\PrivateFunctions\Export-Projects"
+. "$PSScriptRoot\PrivateFunctions\Restore-GitRepos"
+. "$PSScriptRoot\PrivateFunctions\Restore-Projects"
+
+# Export functions.
+Export-ModuleMember -Function @(
+    'ConvertFrom-EscapedSegment'
+    'ConvertTo-EscapedSegment'
+    'Get-BuildDefinition'
+    'Export-BuildDefinition'
+    'Export-TestData'
+    'New-PSDrive'
+    'Restore-TestData'
+)
