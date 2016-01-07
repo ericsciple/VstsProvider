@@ -62,5 +62,6 @@ function Restore-Projects {
 
         $projectVstsPath = "$projectsVstsPath\$projectSegment"
         Restore-GitRepos -ProjectVstsPath $projectVstsPath -ProjectDirectory $projectDirectory.FullName
+        #Restore-BuildDefinitions -ProjectVstsPath $projectVstsPath -ProjectDirectory $projectDirectory.FullName
     }
 }

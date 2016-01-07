@@ -35,6 +35,8 @@ function Restore-GitRepos {
             Write-Verbose "Repo exists: $repoName"
         }
 
+        # TODO: SPEED THIS UP BY BATCHING OR USING GIT.EXE. NEED TO FIGURE OUT HOW TO PASS CREDS VIA GIT.EXE.
+
         # Get the refs.
         $refs = @{ }
         $refsVstsPath = "$repoVstsPath\Refs"
