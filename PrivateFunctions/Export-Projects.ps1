@@ -33,6 +33,7 @@ function Export-TeamProjects {
             $capabilitiesFile,
             ($capabilities | ConvertTo-Json -Depth 1000),
             [System.Text.Encoding]::UTF8)
+        Export-BuildDefinitions -ProjectVstsPath $projectVstsPath -ProjectDirectory $projectDirectory
         Export-GitRepos -ProjectVstsPath $projectVstsPath -ProjectDirectory $projectDirectory
     }
 }

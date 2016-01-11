@@ -60,8 +60,10 @@ Import-Module -Assembly ([VstsProvider.Provider].Assembly)
 . "$PSScriptRoot\PublicFunctions\Export-TestData"
 . "$PSScriptRoot\PublicFunctions\New-PSDrive"
 . "$PSScriptRoot\PublicFunctions\Restore-TestData"
+. "$PSScriptRoot\PrivateFunctions\Export-BuildDefinitions"
 . "$PSScriptRoot\PrivateFunctions\Export-GitRepos"
 . "$PSScriptRoot\PrivateFunctions\Export-Projects"
+. "$PSScriptRoot\PrivateFunctions\Restore-BuildDefinitions"
 . "$PSScriptRoot\PrivateFunctions\Restore-GitRepos"
 . "$PSScriptRoot\PrivateFunctions\Restore-Projects"
 

@@ -59,9 +59,7 @@ function Export-GitRepos {
                     $downloadStream.CopyTo($fileStream)
                     $fileStream.Flush()
                     $fileStream.Close()
-                }
-                finally
-                {
+                } finally {
                     if ($fileStream) { $fileStream.Dispose() }
                     if ($downloadStream) { $downloadStream.Dispose() }
                 }

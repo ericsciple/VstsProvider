@@ -15,19 +15,19 @@ function Restore-BuildDefinitions {
     Get-ChildItem -LiteralPath $reposVstsPath |
         ForEach-Object { $repos[$_.Name] = $_ }
 
-    # Get the queues.
-    $queues = @{ }
-    $httpClient = Get-Item -LiteralPath $reposVstsPath
-    Write-Verbose "Getting queues"
-    $httpClient.GetQueuesAsync().Result |
-        ForEach-Object { $queues[$_.Name] = $_ }
-
     # Get the build definitions.
     $definitionsVstsPath = "$ProjectVstsPath\BuildDefinitions"
     $definitions = @{ }
     Write-Verbose "Getting build definitions: $definitionsVstsPath"
     Get-ChildItem -LiteralPath $definitionsVstsPath |
         ForEach-Object { $definitions[$_.Name] = $_ }
+
+    # Get the queues.
+    $queues = @{ }
+    $httpClient = Get-Item -LiteralPath $definitionsVstsPath
+    Write-Verbose "Getting queues"
+    $httpClient.GetQueuesAsync().Result |
+        ForEach-Object { $queues[$_.Name] = $_ }
 
     # Get the definition files.
     $definitionsDirectory = "$ProjectDirectory\BuildDefs"
@@ -45,26 +45,27 @@ function Restore-BuildDefinitions {
             continue
         }
 
-        # Fixup the definition's repo.
         $repo = $repos[$definition.Repository.Name]
         if (!$repo) {
             Write-Error "Repo not found: $($definition.Repository.Name) ; Project: $projectName"
             continue
         }
 
-        $definition.Repository = $repo
-
-        # Fixup the definition's queue.
         $queue = $queues[$definition.Queue.Name]
         if (!$queue) {
             Write-Error "Queue not found: $($definition.Queue.Name) ; Project: $projectName"
             continue
         }
 
+        # Fix up the definition.
+        $definition.Id = 0
+        $definition.ParentDefinition = $null
+        $definition.Repository.Id = $repo.Id
+        $definition.Repository.Url = $repo.Url
         $definition.Queue = $queue
 
         # Create the definition.
         Write-Verbose "Creating definition: $($definition.Name)"
-        $null = $httpClient.CreateDefinitionAsync($definition, $project).Result
+        $null = $httpClient.CreateDefinitionAsync($definition, $projectName).Result
     }
 }
