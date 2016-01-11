@@ -53,3 +53,12 @@ No need to type the full name for HTTP client drive items. Just type enough of t
 ```
 gi myserver:\proj\defaultcollection\p\myProject
 ```
+
+## Export/Restore test data
+Currently can be used to export/restore: projects, git repos, git sources (tip of each branch only - not a full clone), and build definitions.
+
+Expect "path too long" issues if your sources contain a somewhat deep structure. Need to spend more time in this area.
+```
+Export-TestData -VstsDriveName myserver -LiteralDirectory C:\VstsTestData
+Restore-TestData -VstsDriveName otherserver -LiteralDirectory C:\VstsTestData
+```
