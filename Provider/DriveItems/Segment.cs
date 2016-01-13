@@ -64,12 +64,12 @@
                     // HTTP client found by name or partial name. 
                     childTypeInfo = matchingHttpClientChildTypeInfos.Single();
 
-                    // Fix the child name, otherwise the partial name can cause strange issues.
-                    // Haven't figured out exactly why, but fixing the child name to match
-                    // works around the issue. For example, if the child name isn't fixed then
-                    // "gi onprem:\proj\defaultcollection" ends up attempting to resolve the
-                    // literal path "onprem:\defaultcollection" instead of "onprem:\proj\defaultcollection".
-                    childName = childTypeInfo.Name;
+                    // // Fix the child name, otherwise the partial name can cause strange issues.
+                    // // Haven't figured out exactly why, but fixing the child name to match
+                    // // works around the issue. For example, if the child name isn't fixed then
+                    // // "gi onprem:\proj\defaultcollection" ends up attempting to resolve the
+                    // // literal path "onprem:\defaultcollection" instead of "onprem:\proj\defaultcollection".
+                    // childName = childTypeInfo.Name;
                 }
                 else
                 {
