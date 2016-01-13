@@ -33,7 +33,7 @@
                 {
                     return httpClient
                         .GetProjects(
-                            stateFilter: null,
+                            stateFilter: Microsoft.TeamFoundation.Common.ProjectState.All,
                             top: top,
                             skip: skip,
                             userState: null)

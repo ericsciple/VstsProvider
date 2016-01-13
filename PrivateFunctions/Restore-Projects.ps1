@@ -28,6 +28,7 @@ function Restore-Projects {
             # Create the project.
             $project = New-Object Microsoft.TeamFoundation.Core.WebApi.TeamProject
             $project.Name = $projectName
+            $project.Description = $projectName
             $project.Capabilities = @{ }
             $capabilities |
                 Get-Member -MemberType NoteProperty |
@@ -46,6 +47,9 @@ function Restore-Projects {
             #$projectHttpClient.DefaultRequestHeaders.Add('Cookie', 'Tfs-EnablePCW=1')
             Write-Verbose "Creating project: $projectName"
             $null = $projectHttpClient.QueueCreateProject($project).Result
+            #$projectHttpClient.lastresponsecontext
+            #$host.EnterNestedPrompt()
+            #throw 'failed :('
         } else {
             Write-Verbose "Project exists: $projectName"
         }
@@ -54,7 +58,7 @@ function Restore-Projects {
         if ($project.State -ne 'wellFormed') {
             Write-Verbose "Waiting for project '$projectName' to be well-formed."
             while ($project.State -ne 'wellFormed') {
-                $project = Get-Item "$($DriveName):\ProjectCollections\$collectionSegment\Projects\$projectSegment"
+                $project = Get-Item "$CollectionVstsPath\Projects\$projectSegment"
                 Write-Verbose "Project '$ProjectName' state: $($project.State)"
                 Start-Sleep -Seconds 1
             }

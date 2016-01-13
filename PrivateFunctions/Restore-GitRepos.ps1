@@ -30,7 +30,7 @@ function Restore-GitRepos {
             $repo.Name = $repoName
             $gitHttpClient = Get-Item -LiteralPath $reposVstsPath
             Write-Verbose "Creating repo: $repoName"
-            $null = $gitHttpClient.CreateRepositoryAsync($repo, $projectName).Result
+            $repo = $gitHttpClient.CreateRepositoryAsync($repo, $projectName).Result
         } else {
             Write-Verbose "Repo exists: $repoName"
         }

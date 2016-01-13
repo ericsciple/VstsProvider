@@ -30,7 +30,9 @@
             {
                 Segment lastSegment = this.Segments.Last();
                 return lastSegment is RootSegment
-                    ? string.Concat(this.rootSegment.Name, @"\")
+                    //? string.Concat(this.rootSegment.Name, @"\")
+                    ? this.provider.PSVstsDriveInfo.Root.Replace('/', '\\')
+                    //? this.provider.PSVstsDriveInfo.Root
                     : lastSegment.Name;
             }
         }
@@ -45,9 +47,13 @@
                     case 1:
                         return string.Empty;
                     case 2:
-                        return string.Concat(this.rootSegment.Name, @"\");
+                        //return string.Concat(this.rootSegment.Name, @"\");
+                        return provider.PSVstsDriveInfo.Root.Replace('/', '\\');
+                        //return provider.PSVstsDriveInfo.Root;
                     default:
-                        return string.Join(@"\", this.Segments.Take(this.Segments.Count() - 1).Select(x => x.Name));
+                        //return string.Join(@"\", this.Segments.Take(this.Segments.Count() - 1).Select(x => x.Name));
+                        return string.Concat(provider.PSVstsDriveInfo.Root.Replace('/', '\\'), @"\", string.Join(@"\", this.Segments.Skip(1).Take(this.Segments.Count() - 2).Select(x => x.Name)));
+                        //return string.Concat(provider.PSVstsDriveInfo.Root, @"\", string.Join(@"\", this.Segments.Skip(1).Take(this.Segments.Count() - 2).Select(x => x.Name)));
                 }
             }
         }
@@ -58,8 +64,12 @@
             {
                 int totalCount = this.Segments.Count();
                 return totalCount == 1
-                    ? string.Concat(this.rootSegment.Name, @"\")
-                    : string.Join(@"\", this.Segments.Select(x => x.Name));
+                    //? string.Concat(this.rootSegment.Name, @"\")
+                    ? string.Concat(provider.PSVstsDriveInfo.Root.Replace('/', '\\'), @"\")
+                    //? string.Concat(provider.PSVstsDriveInfo.Root, @"\")
+                    //: string.Join(@"\", this.Segments.Select(x => x.Name));
+                    : string.Concat(provider.PSVstsDriveInfo.Root.Replace('/', '\\'), @"\", string.Join(@"\", this.Segments.Skip(1).Select(x => x.Name)));
+                    //: string.Concat(provider.PSVstsDriveInfo.Root, @"\", string.Join(@"\", this.Segments.Skip(1).Select(x => x.Name)));
             }
         }
 

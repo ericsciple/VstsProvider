@@ -32,7 +32,7 @@ function Restore-BuildDefinitions {
     # Get the definition files.
     $definitionsDirectory = "$ProjectDirectory\BuildDefs"
     $serializer = New-Object System.Runtime.Serialization.Json.DataContractJsonSerializer([Microsoft.TeamFoundation.Build.WebApi.BuildDefinition])
-    foreach ($file in Get-ChildItem -LiteralPath $definitionsDirectory -Filter *.json) {
+    foreach ($file in Get-ChildItem -LiteralPath $definitionsDirectory -Filter *.json -ErrorAction Ignore) {
         $stream = $null
         try {
             $stream = New-Object System.IO.FileStream($file.FullName, 'Open')
@@ -46,11 +46,6 @@ function Restore-BuildDefinitions {
         }
 
         $repo = $repos[$definition.Repository.Name]
-        if (!$repo) {
-            Write-Error "Repo not found: $($definition.Repository.Name) ; Project: $projectName"
-            continue
-        }
-
         $queue = $queues[$definition.Queue.Name]
         if (!$queue) {
             Write-Error "Queue not found: $($definition.Queue.Name) ; Project: $projectName"
@@ -60,8 +55,13 @@ function Restore-BuildDefinitions {
         # Fix up the definition.
         $definition.Id = 0
         $definition.ParentDefinition = $null
-        $definition.Repository.Id = $repo.Id
-        $definition.Repository.Url = $repo.Url
+        if ($repo) {
+            $definition.Repository.Id = $repo.Id
+            $definition.Repository.Url = $repo.Url
+        } elseif ($definition.Repository.Id -eq "$/") {
+            $definition.Repository.Url = $httpClient.BaseAddress
+        }
+
         $definition.Queue = $queue
 
         # Create the definition.

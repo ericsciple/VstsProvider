@@ -120,6 +120,8 @@ namespace VstsProvider
 
         protected override bool IsValidPath(string rawPath)
         {
+            //System.Diagnostics.Debugger.Launch();
+            //System.Console.WriteLine("IsValidPath");
             this.WriteDebug("VstsProvider.Provider.IsValidPath(path: '{0}')", rawPath);
             try
             {
