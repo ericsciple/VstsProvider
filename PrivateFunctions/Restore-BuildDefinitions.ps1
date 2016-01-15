@@ -8,6 +8,10 @@ function Restore-BuildDefinitions {
 
     $projectName = ConvertFrom-EscapedSegment ([System.IO.Path]::GetFileName($ProjectVstsPath))
 
+    # Get the project.
+    Write-Verbose "Getting project: $projectVstsPath"
+    $project = Get-Item -LiteralPath $projectVstsPath
+
     # Get the repos.
     $repos = @{ }
     $reposVstsPath = "$ProjectVstsPath\GitRepos"
@@ -62,6 +66,7 @@ function Restore-BuildDefinitions {
             $definition.Repository.Url = $httpClient.BaseAddress
         }
 
+        $definition.Project = $project
         $definition.Queue = $queue
 
         # Create the definition.
