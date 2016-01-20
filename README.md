@@ -59,6 +59,6 @@ Currently can be used to export/restore: projects, git repos, git sources (tip o
 
 Expect "path too long" issues if your sources contain a somewhat deep structure. Need to spend more time in this area.
 ```
-Export-TestData -VstsDriveName myserver -LiteralDirectory C:\VstsTestData
-Restore-TestData -VstsDriveName otherserver -LiteralDirectory C:\VstsTestData
+Export-VstsTestData -VstsDriveName myserver -LiteralDirectory C:\VstsTestData -Verbose
+Restore-VstsTestData -VstsDriveName otherserver -LiteralDirectory C:\VstsTestData -Verbose
 ```
