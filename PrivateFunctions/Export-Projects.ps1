@@ -8,11 +8,11 @@ function Export-TeamProjects {
 
     # Get the projects.
     $projectsVstsPath = "$collectionVstsPath\Projects"
-    Write-Verbose "Getting projects: $projectsVstsPath"
+    Write-Host "Getting projects: $projectsVstsPath"
     foreach ($project in Get-ChildItem -LiteralPath $projectsVstsPath) {
         $projectSegment = $project.PSVstsChildName
         $projectVstsPath = "$projectsVstsPath\$projectSegment"
-        Write-Verbose "Getting project: $projectVstsPath"
+        Write-Host "Getting project: $projectVstsPath"
         $project = Get-Item -LiteralPath $projectVstsPath
         if (!$?) {
             continue

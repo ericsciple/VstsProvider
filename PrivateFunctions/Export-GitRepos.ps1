@@ -9,7 +9,7 @@ function Export-GitRepos {
     # Get the repos.
     $reposVstsPath = "$projectVstsPath\GitRepos"
     $gitHttpClient = Get-Item -LiteralPath $reposVstsPath
-    Write-Verbose "Getting Git repos: $reposVstsPath"
+    Write-Host "Getting Git repos: $reposVstsPath"
     foreach ($repo in Get-ChildItem -LiteralPath $reposVstsPath) {
         $repoSegment = $repo.PSVstsChildName
         $repoVstsPath = "$reposVstsPath\$repoSegment"
@@ -19,7 +19,7 @@ function Export-GitRepos {
         # Get the refs.
         $refsVstsPath = "$repoVstsPath\Refs"
         $refsDirectory = "$repoDirectory\Refs"
-        Write-Verbose "Getting refs: $refsVstsPath"
+        Write-Host "Getting refs: $refsVstsPath"
         foreach ($ref in Get-ChildItem -LiteralPath $refsVstsPath) {
             if ($ref.Name -notlike 'refs/heads/*') {
                 continue
@@ -33,7 +33,7 @@ function Export-GitRepos {
             # Get the items.
             $itemsVstsPath = "$refVstsPath\Items"
             $itemsDirectory = "$refDirectory\Items"
-            Write-Verbose "Getting items: $itemsVstsPath"
+            Write-Host "Getting items: $itemsVstsPath"
             foreach ($item in Get-ChildItem -LiteralPath $itemsVstsPath) {
                 if ($item.GitObjectType -ne 'Blob') {
                     continue
@@ -47,7 +47,7 @@ function Export-GitRepos {
                 $null = [System.IO.Directory]::CreateDirectory($itemDirectory)
                 $fileStream = $null
                 $downloadStream = $null
-                Write-Verbose "Getting item: $itemVstsPath"
+                Write-Host "Getting item: $itemVstsPath"
                 try{
                     $fileStream = New-Object System.IO.FileStream($itemFile, [System.IO.FileMode]::Create)
                     $downloadStream = $gitHttpClient.GetBlobContentAsync(

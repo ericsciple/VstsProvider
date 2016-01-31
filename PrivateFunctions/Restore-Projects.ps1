@@ -9,7 +9,7 @@ function Restore-Projects {
     # Get the projects.
     $projects = @{ }
     $projectsVstsPath = "$CollectionVstsPath\Projects"
-    Write-Verbose "Getting projects: $projectsVstsPath"
+    Write-Host "Getting projects: $projectsVstsPath"
     Get-ChildItem -LiteralPath $projectsVstsPath |
         ForEach-Object { $projects[$_.PSVstsChildName] = $_ }
 
@@ -45,21 +45,21 @@ function Restore-Projects {
                 }
             $projectHttpClient = Get-Item -LiteralPath $projectsVstsPath
             #$projectHttpClient.DefaultRequestHeaders.Add('Cookie', 'Tfs-EnablePCW=1')
-            Write-Verbose "Creating project: $projectName"
+            Write-Host "Creating project: $projectName"
             $null = $projectHttpClient.QueueCreateProject($project).Result
             #$projectHttpClient.lastresponsecontext
             #$host.EnterNestedPrompt()
             #throw 'failed :('
         } else {
-            Write-Verbose "Project exists: $projectName"
+            Write-Host "Project exists: $projectName"
         }
 
         # Wait for the project to be well formed.
         if ($project.State -ne 'wellFormed') {
-            Write-Verbose "Waiting for project '$projectName' to be well-formed."
+            Write-Host "Waiting for project '$projectName' to be well-formed."
             while ($project.State -ne 'wellFormed') {
                 $project = Get-Item "$CollectionVstsPath\Projects\$projectSegment"
-                Write-Verbose "Project '$ProjectName' state: $($project.State)"
+                Write-Host "Project '$ProjectName' state: $($project.State)"
                 Start-Sleep -Seconds 1
             }
         }

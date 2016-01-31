@@ -11,7 +11,7 @@ function Export-BuildDefinitions {
     # Get the build definitions.
     $definitionsVstsPath = "$ProjectVstsPath\BuildDefinitions"
     $definitions = @{ }
-    Write-Verbose "Getting build definitions: $definitionsVstsPath"
+    Write-Host "Getting build definitions: $definitionsVstsPath"
     Get-ChildItem -LiteralPath $definitionsVstsPath |
         ForEach-Object { $definitions[$_.Name] = $_ }
 
@@ -25,7 +25,7 @@ function Export-BuildDefinitions {
         $definition = $definitions[$definitionName]
         $definitionSegment = $definition.PSVstsChildName
         $definitionVstsPath = "$definitionsVstsPath\$definitionSegment"
-        Write-Verbose "Getting full definition by ID for: $definitionVstsPath"
+        Write-Host "Getting full definition by ID for: $definitionVstsPath"
         if (!($definition = $httpClient.GetDefinitionAsync($projectName, $definition.Id).Result)) {
             continue
         }

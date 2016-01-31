@@ -9,7 +9,7 @@ function Restore-TestData {
 
 
     # Get the collections.
-    Write-Verbose "Restoring test data."
+    Write-Host "Restoring test data."
     $collectionDirectories = Get-ChildItem -LiteralPath "$LiteralDirectory\ProjColls" |
         Where-Object { $_ -is [System.IO.DirectoryInfo] }
     foreach ($collectionDirectory in $collectionDirectories) {

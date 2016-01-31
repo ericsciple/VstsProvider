@@ -8,9 +8,9 @@ function Export-TestData {
         [string]$LiteralDirectory = "C:\VstsTestData")
 
     # Get the collections.
-    Write-Verbose "Exporting test data."
+    Write-Host "Exporting test data."
     $collectionsVstsPath = "$($VstsDriveName):\ProjectCollections"
-    Write-Verbose "Getting collections: $collectionsVstsPath"
+    Write-Host "Getting collections: $collectionsVstsPath"
     foreach ($collection in Get-ChildItem -LiteralPath $collectionsVstsPath) {
         # Create the collection directory.
         $collectionSegment = $collection.PSVstsChildName

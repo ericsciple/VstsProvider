@@ -9,27 +9,27 @@ function Restore-BuildDefinitions {
     $projectName = ConvertFrom-EscapedSegment ([System.IO.Path]::GetFileName($ProjectVstsPath))
 
     # Get the project.
-    Write-Verbose "Getting project: $projectVstsPath"
+    Write-Host "Getting project: $projectVstsPath"
     $project = Get-Item -LiteralPath $projectVstsPath
 
     # Get the repos.
     $repos = @{ }
     $reposVstsPath = "$ProjectVstsPath\GitRepos"
-    Write-Verbose "Getting repos: $reposVstsPath"
+    Write-Host "Getting repos: $reposVstsPath"
     Get-ChildItem -LiteralPath $reposVstsPath |
         ForEach-Object { $repos[$_.Name] = $_ }
 
     # Get the build definitions.
     $definitionsVstsPath = "$ProjectVstsPath\BuildDefinitions"
     $definitions = @{ }
-    Write-Verbose "Getting build definitions: $definitionsVstsPath"
+    Write-Host "Getting build definitions: $definitionsVstsPath"
     Get-ChildItem -LiteralPath $definitionsVstsPath |
         ForEach-Object { $definitions[$_.Name] = $_ }
 
     # Get the queues.
     $queues = @{ }
     $httpClient = Get-Item -LiteralPath $definitionsVstsPath
-    Write-Verbose "Getting queues"
+    Write-Host "Getting queues"
     $httpClient.GetQueuesAsync().Result |
         ForEach-Object { $queues[$_.Name] = $_ }
 
@@ -70,7 +70,7 @@ function Restore-BuildDefinitions {
         $definition.Queue = $queue
 
         # Create the definition.
-        Write-Verbose "Creating definition: $($definition.Name)"
+        Write-Host "Creating definition: $($definition.Name)"
         $null = $httpClient.CreateDefinitionAsync($definition, $projectName).Result
     }
 }

@@ -11,7 +11,7 @@ function Restore-GitRepos {
     # Get the repos.
     $repos = @{ }
     $reposVstsPath = "$ProjectVstsPath\GitRepos"
-    Write-Verbose "Getting repos: $reposVstsPath"
+    Write-Host "Getting repos: $reposVstsPath"
     Get-ChildItem -LiteralPath $reposVstsPath |
         ForEach-Object { $repos[$_.PSVstsChildName] = $_ }
 
@@ -29,10 +29,10 @@ function Restore-GitRepos {
             $repo = New-Object Microsoft.TeamFoundation.SourceControl.WebApi.GitRepository
             $repo.Name = $repoName
             $gitHttpClient = Get-Item -LiteralPath $reposVstsPath
-            Write-Verbose "Creating repo: $repoName"
+            Write-Host "Creating repo: $repoName"
             $repo = $gitHttpClient.CreateRepositoryAsync($repo, $projectName).Result
         } else {
-            Write-Verbose "Repo exists: $repoName"
+            Write-Host "Repo exists: $repoName"
         }
 
         # TODO: SPEED THIS UP BY BATCHING OR USING GIT.EXE. NEED TO FIGURE OUT HOW TO PASS CREDS VIA GIT.EXE.
@@ -40,7 +40,7 @@ function Restore-GitRepos {
         # Get the refs.
         $refs = @{ }
         $refsVstsPath = "$repoVstsPath\Refs"
-        Write-Verbose "Getting refs: $refsVstsPath"
+        Write-Host "Getting refs: $refsVstsPath"
         Get-ChildItem -LiteralPath $refsVstsPath |
             ForEach-Object { $refs[$_.PSVstsChildName] = $_ }
 
@@ -59,7 +59,7 @@ function Restore-GitRepos {
             $blobItems = @{ }
             if ($refs[$refSegment]) {
                 $itemsVstsPath = "$refVstsPath\Items"
-                Write-Verbose "Getting items: $itemsVstsPath"
+                Write-Host "Getting items: $itemsVstsPath"
                 Get-ChildItem -LiteralPath $itemsVstsPath |
                     Where-Object { $_.GitObjectType -eq 'Blob' } |
                     ForEach-Object { $blobItems[$_.Path] = $_ }
@@ -119,7 +119,7 @@ function Restore-GitRepos {
                         $gitHttpClient = Get-Item -LiteralPath $reposVstsPath
                     }
 
-                    Write-Verbose "Pushing: $($file.FullName)"
+                    Write-Host "Pushing: $($file.FullName)"
                     $createdPush = $gitHttpClient.CreatePushAsync($push, $projectName, $repo.Id).Result
                     $lastCommitId = $createdPush.Commits[0].CommitId
                 }
