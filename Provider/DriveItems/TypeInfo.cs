@@ -24,7 +24,7 @@ param(
 
 $PSObject |
     Select-Object -Property * -ExcludeProperty PS* |
-    ConvertTo-Json -Depth 1000
+    ConvertTo-Json -Depth 100
 ";
             return parentSegment.GetProvider().InvokeCommand.InvokeScript(
                 script: Script,
@@ -151,7 +151,7 @@ $PSObject |
 //     $BodyObject = $(throw 'Missing BodyObject.')
 // )
 // 
-// [string]$bodyJson = ConvertTo-Json -Depth 1000 $BodyObject
+// [string]$bodyJson = ConvertTo-Json -Depth 100 $BodyObject
 // [bool]$useDefaultCredentials = ""$($Headers.Authorization)"" -eq ''
 // $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -Method Put -UseDefaultCredentials:$useDefaultCredentials -Headers $Headers -Body $bodyJson
 // if ($response.StatusCode -ne 200) {

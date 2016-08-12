@@ -68,11 +68,9 @@
 
         protected override VssHttpClientBase GetHttpClient(Segment parentSegment)
         {
-            return parentSegment
-                .GetProvider()
-                .PSVstsDriveInfo
-                .GetHttpClient<ProjectHttpClient>(
-                    SegmentHelper.GetProjectCollectionName(parentSegment));
+            DriveInfo driveInfo = parentSegment.GetProvider().PSVstsDriveInfo;
+            return driveInfo.GetHttpClient<ProjectHttpClient>(
+                SegmentHelper.GetHttpClientProjectCollectionName(driveInfo.Root, parentSegment));
         }
     }
 }

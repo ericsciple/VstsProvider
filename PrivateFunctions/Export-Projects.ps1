@@ -31,7 +31,7 @@ function Export-TeamProjects {
         $capabilitiesFile = "$projectDirectory\Capabilities.json"
         [System.IO.File]::WriteAllText(
             $capabilitiesFile,
-            ($capabilities | ConvertTo-Json -Depth 1000),
+            ($capabilities | ConvertTo-Json -Depth 100),
             [System.Text.Encoding]::UTF8)
         Export-BuildDefinitions -ProjectVstsPath $projectVstsPath -ProjectDirectory $projectDirectory
         Export-GitRepos -ProjectVstsPath $projectVstsPath -ProjectDirectory $projectDirectory

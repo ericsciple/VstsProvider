@@ -24,6 +24,6 @@ function Export-BuildDefinition {
 
     Get-Item "$($DriveName):\ProjectCollections_1.0-preview.2\$CollectionName\TeamProjects_1.0\$ProjectName\BuildDefinitionsById_2.0\$DefinitionId" |
         Select-Object -Property * -ExcludeProperty PS* |
-        ConvertTo-Json -Depth 1000 |
+        ConvertTo-Json -Depth 100 |
         Out-File -LiteralPath $LiteralPath
 }

@@ -7,11 +7,9 @@
     {
         protected sealed override VssHttpClientBase GetHttpClient(Segment parentSegment)
         {
-            return parentSegment
-                .GetProvider()
-                .PSVstsDriveInfo
-                .GetHttpClient<GitHttpClient>(
-                    SegmentHelper.GetProjectCollectionName(parentSegment));
+            DriveInfo driveInfo = parentSegment.GetProvider().PSVstsDriveInfo;
+            return driveInfo.GetHttpClient<GitHttpClient>(
+                SegmentHelper.GetHttpClientProjectCollectionName(driveInfo.Root, parentSegment));
         }
     }
 }

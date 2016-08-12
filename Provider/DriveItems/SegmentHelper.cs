@@ -25,8 +25,15 @@
             return refName.Substring("heads/".Length);
         }
 
-        public static string GetProjectCollectionName(Segment startingSegment)
+        public static string GetHttpClientProjectCollectionName(string root, Segment startingSegment)
         {
+            string upperHost = new Uri(root).Host.ToUpperInvariant();
+            if (upperHost.EndsWith(".VISUALSTUDIO.COM") ||
+                upperHost.EndsWith(".TFSALLIN.NET"))
+            {
+                return "DefaultCollection";
+            }
+
             return GetUnescaped(startingSegment, "collection name", typeof(ProjectCollectionTypeInfo));
         }
 
